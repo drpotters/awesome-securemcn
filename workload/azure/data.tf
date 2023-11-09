@@ -8,19 +8,19 @@ terraform {
 }
 
 data "tfe_outputs" "root" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-root"
 }
 data "tfe_outputs" "azure" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-azure"
 }
 data "tfe_outputs" "aks" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-azure-aks"
 }
 data "tfe_outputs" "aws-workload" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws-workload"
 }
 

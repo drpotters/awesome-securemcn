@@ -1,7 +1,12 @@
+#TF Cloud
+variable "tf_cloud_organization" {
+  type = string
+  description = "TF cloud org (Value set in TF cloud)"
+}
+
 variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
-  default     = "mcn-demo"
 }
 variable "resourceOwner" {
   type        = string
@@ -14,12 +19,12 @@ variable "vnetCidr" {
 }
 variable "subnetPrefixes" {
   type        = list(any)
-  default     = ["10.2.10.0/24", "10.2.20.0/24", "10.2.52.0/24"]
+  default     = ["10.2.10.0/24", "10.2.20.0/24", "10.2.52.0/24", "10.2.30.0/24", "10.2.40.0/24"]
   description = "Subnet address prefixes"
 }
 variable "subnetNames" {
   type        = list(any)
-  default     = ["public", "sli", "private"]
+  default     = ["public", "sli", "private", "workload", "AzureFirewallSubnet"]
   description = "Subnet names"
 }
 variable "webapp_image_offer_name" {
@@ -86,4 +91,14 @@ variable "instanceType" {
   type        = string
   description = "instance type for virtual machine"
   default     = "Standard_B2ms"
+}
+
+# Unused
+variable "f5xcCloudCredGCP" {
+  description = "Name of the Volterra cloud credentials to use with GCP VPC sites"
+  type        = string
+}
+variable "gcpProjectId" {
+  type        = string
+  description = "gcp project id"
 }

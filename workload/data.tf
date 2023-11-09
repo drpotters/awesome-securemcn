@@ -9,17 +9,17 @@ terraform {
 
 # Common
 data "tfe_outputs" "root" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-root"
 }
 
 # AWS
 data "tfe_outputs" "aws" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws"
 }
 data "tfe_outputs" "eks" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws-eks"
 }
 data "tfe_outputs" "nic" {
@@ -27,7 +27,7 @@ data "tfe_outputs" "nic" {
   workspace = "xcmcn-ce-nic"
 }
 data "tfe_outputs" "aws-workload" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws-workload"
 }
 data "aws_eks_cluster_auth" "auth" {
@@ -36,20 +36,20 @@ data "aws_eks_cluster_auth" "auth" {
 
 # Azure
 data "tfe_outputs" "azure" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-azure"
 }
 data "tfe_outputs" "aks" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-azure-aks"
 }
 data "tfe_outputs" "azure-workload" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-azure-workload"
 }
 
 # Google
 data "tfe_outputs" "google-workload" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-gcp-workload"
 }

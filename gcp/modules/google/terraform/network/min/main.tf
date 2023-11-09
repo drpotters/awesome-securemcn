@@ -11,7 +11,7 @@ terraform {
 }
 
 data "tfe_outputs" "root" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-root"
 }
 

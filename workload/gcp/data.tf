@@ -7,24 +7,24 @@ terraform {
   }
 }
 data "tfe_outputs" "root" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-root"
 }
 data "tfe_outputs" "aws" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws"
 }
 data "tfe_outputs" "eks" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-aws-eks"
 }
 
 data "tfe_outputs" "gcp" {
-  organization = "example-org-fa8f78"
+  organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-gcp"
 }
 data "tfe_outputs" "gke" {
-    organization = "example-org-fa8f78"
+    organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-gcp-gke"
 }
 

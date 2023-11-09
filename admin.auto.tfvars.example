@@ -20,7 +20,7 @@ ssh_key = "ssh-rsa REDACTED me@my.email"
 awsRegion        = "us-west-2"
 f5xcCloudCredAWS = "cloud-cred-aws"
 awsAz1           = "us-west-2a"
-awsAZ2           = "us-west-2b"
+awsAz2           = "us-west-2b"
 
 # Azure variables
 azureLocation      = "westus2"

@@ -1,10 +1,13 @@
-variable "buildSuffix" {
-  type        = string
-  description = "random build suffix for resources"
+#TF Cloud
+variable "tf_cloud_organization" {
+  type = string
+  description = "TF cloud org (Value set in TF cloud)"
 }
+
 variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
+  default     = "mcn-demo"
 }
 variable "resourceOwner" {
   type        = string
@@ -12,12 +15,12 @@ variable "resourceOwner" {
 }
 variable "vnetCidr" {
   type        = string
-  default     = "192.168.0.0/16"
+  default     = "10.2.0.0/16"
   description = "CIDR IP Address range of the VNet"
 }
 variable "subnetPrefixes" {
   type        = list(any)
-  default     = ["192.168.10.0/24", "192.168.20.0/24", "192.168.52.0/24"]
+  default     = ["10.2.10.0/24", "10.2.20.0/24", "10.2.52.0/24"]
   description = "Subnet address prefixes"
 }
 variable "subnetNames" {
@@ -65,10 +68,6 @@ variable "namespace" {
   type        = string
   description = "F5 XC application namespace"
 }
-variable "f5xcVirtualSite" {
-  type        = string
-  description = "The name of the F5 XC virtual site that will receive LB registrations."
-}
 variable "domain_name" {
   type        = string
   description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers."
@@ -79,6 +78,11 @@ variable "labels" {
   default     = {}
   description = "An optional list of labels to apply to Azure resources."
 }
+variable "commonSiteLabels" {
+  type        = map(string)
+  default     = {} 
+  description = "An optional list of labels to apply to all CE Sites."
+} 
 variable "commonClientIP" {
   type        = string
   default     = null
