@@ -1,0 +1,32 @@
+# F5 Distributed Cloud DNS
+# Let the app elsewhere find all of its parts regardless of site this is deployed to
+
+/* resource "volterra_dns_domain" "my-mcn-demo" {
+    name = local.app_domain
+    namespace = "system"
+
+    volterra_managed = true
+} */
+
+resource "kubernetes_config_map_v1_data" "coredns-custom" {
+    metadata {
+        name = "coredns-custom"
+        namespace = "kube-system"
+    }
+
+    /* data = tomap({"${var.projectPrefix}.server" = <<-EOT
+          ${var.projectPrefix}-${local.build_suffix}.${var.domain_name}:53 {
+            errors
+            cache 30
+            forward . ${local.xc_site_slo_ip}
+          }
+          EOT
+        }) */
+    data = tomap({"${var.projectPrefix}.override" = <<-EOT
+        hosts {
+          ${data.tfe_outputs.aws-workload.values.service_endpoint_ip} backend.demo.internal
+          fallthrough
+        }
+        EOT
+    })
+}

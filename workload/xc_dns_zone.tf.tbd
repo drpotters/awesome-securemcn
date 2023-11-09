@@ -1,0 +1,51 @@
+data "tfe_outputs" "aks" {
+  organization = "example-org-fa8f78"
+  workspace = "xcmcn-ce-azure-aks"
+}
+
+/* data "tfe_outputs" "eks" {
+    organization = "example-org-fa8f78"
+    workspace = "xcmcn-ce-aws-eks"
+} */
+
+data "tfe_outputs" "aws" {
+  organization = "example-org-fa8f78"
+  workspace = "xcmcn-ce-aws"
+}
+
+resource "volterra_dns_zone" "backend-rr" {
+  name = local.app_domain
+  namespace = "system"
+
+  primary {
+    rr_set_group {
+      metadata {
+        description = "Arcadia backend (files)"
+        disable = false
+        name = "backend"
+      }
+      rr_set {
+        ttl = "60"
+        a_record {
+          name = "backend"
+          // values = ["${data.kubernetes_service_v1.app2.spec[0].cluster_ip}"]
+          values = ["${data.tfe_outputs.aws.values.loadbalancer_endpoint_ip}"]
+        }
+      }
+    }
+    rr_set_group {
+      metadata {
+        description = "Arcadia app2 (api)"
+        disable = false
+        name = "app2"
+      }
+      rr_set {
+        ttl = "60"
+        a_record {
+          name = "app2"
+          values = ["${data.kubernetes_service_v1.app2.spec[0].cluster_ip}"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+/* resource "kubernetes_ingress_v1" "app-ingress" {
+  wait_for_load_balancer = true
+  metadata {
+    name = "app-ingress"
+    namespace = kubernetes_namespace.app.metadata.0.name
+    annotations {
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    }
+  }
+  spec {
+    ingress_class_name = "nginx"
+    rule {
+      // host = try(data.tfe_outputs.nap.values.external_name, data.tfe_outputs.nic.values.external_name)
+      host = "azure-ingress.${local.app_domain}"
+      http {
+        path {
+          path = "/api"
+          backend {
+            service {
+                // name = kubernetes_service.app_2.metadata.0.name
+                name = "app2"
+                port {
+                    number = 80
+                }
+            }
+          }
+        }
+      }
+    }
+  }
+  depends_on = [
+    kubernetes_deployment.app2,
+    kubernetes_service.app2
+  ]
+} */
+
+/* resource "azurerm_lb" "app-ingress" {
+  name = "${var.projectPrefix}-${local.build_suffix}-lb"
+  location = var.azureLocation
+  resource_group_name = data.tfe_outputs.azure.values.resource_group_name
+
+  frontend_ip_configuration {
+    name = "${var.projectPrefix}-${local.build_suffix}-lb-int-ip"
+    private_ip_address_allocation = "dynamic"
+  }
+}
+
+resource "azurerm_lb_backend_address_pool" "app-pool" {
+  loadbalancer_id = azurerm_lb.app-ingress.id
+  name = "app-backend-pool"
+}
+
+resource "azurerm_lb_backend_address_pool_address" "app-lb-be-ipaddr" {
+  
+} */
+
+resource "kubernetes_ingress_v1" "app-ingress" {
+  wait_for_load_balancer = true
+  metadata {
+    name = "app-ingress"
+    namespace = kubernetes_namespace.app.metadata.0.name
+    annotations {
+      service.beta.kubernetes.io/azure-load-balancer-internal = "true"
+    }
+  }
+  spec {
+    type = loadbalancer
+    port = 80
+    selector = 
+  }
+}

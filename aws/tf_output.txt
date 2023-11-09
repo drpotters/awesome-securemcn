@@ -1,0 +1,17 @@
+tf_output = <<EOT
+volt_vpc_id = "vpc-02ddbf084e5af7336"
+aws_dx_gw_id = ""
+worker_public_ip_address = ""
+volt_node_hostname_mapppings = {"ves-node-id-6bfc8f6d5f":"ip-10-1-10-213"}
+aws_object_name = "YlMQydOQU"
+volt_vpc_id_mappings = {"ves-vpc-id-vpc-02ddbf084e5af7336":"vpc-02ddbf084e5af7336"}
+aws_vgw_id = ""
+route_table_workload_ids = ["rtb-04f5f2e87b9422d34"]
+worker_private_ip_address = ""
+master_public_ip_address = "52.33.13.194"
+volt_node_eip_mappings = {"ves-node-id-6bfc8f6d5f":"52.33.13.194"}
+controller_dp_private_sli_ips = ["10.1.20.142"]
+subnet_info = [{"az":"us-west-2a","inside_subnet":{"cidr_block":"10.1.20.0/24","id":"subnet-093f9a9544e760d13"},"outside_subnet":{"cidr_block":"10.1.10.0/24","id":"subnet-00c31c44af98bf104"},"workload_subnet":{"cidr_block":"10.1.30.0/24","id":"subnet-0d92d8c111e6413c2"}}]
+master_private_ip_address = "10.1.10.213"
+
+EOT

@@ -1,0 +1,82 @@
+## template: jinja
+#cloud-config
+# yamllint disable rule:document-start rule:line-length
+write_files:
+  - path: /etc/systemd/system/iptables-webapp.service
+    permissions: '0644'
+    owner: root
+    content: |
+      [Unit]
+      Description=Configure iptables for webapp
+      Wants=gcr-online.target
+      After=gcr-online.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/sbin/iptables -w -A INPUT -p tcp --dport 80 -j ACCEPT
+%{ if tls_secret_key != "" ~}
+      ExecStart=/sbin/iptables -w -A INPUT -p tcp --dport 443 -j ACCEPT
+%{ endif ~}
+  - path: /etc/systemd/system/webapp.service
+    permissions: '0644'
+    owner: root
+    content: |
+      [Unit]
+      Description=Webapp in NGINX
+      Wants=gcr-online.target
+      After=gcr-online.target
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm --name webapp -p 80:80 %{if tls_secret_key != "" } -p 443:443 %{ endif } -v /var/lib/webapp/html:/usr/share/nginx/html:ro -v /var/lib/webapp/conf.d:/etc/nginx/conf.d:ro nginx:alpine
+      ExecStop=/usr/bin/docker stop webapp
+      ExecStopPost=/usr/bin/docker rm webapp
+%{ if tls_secret_key != "" ~}
+  - path: /run/install-server-tls-certs.sh
+    encoding: gz+b64
+    permissions: '0755'
+    owner: root
+    content: |
+      ${install_server_tls_certs_sh}
+%{ endif ~}
+  - path: /var/lib/webapp/html/index.html
+    permissions: '0644'
+    owner: root
+    content: |
+      ${index_html}
+  - path: /var/lib/webapp/html/styles.css
+    permissions: '0644'
+    owner: root
+    encoding: gz+b64
+    content: |
+      ${styles_css}
+  - path: /var/lib/webapp/html/f5-logo-rgb.svg
+    permissions: '0644'
+    owner: root
+    encoding: gz+b64
+    content: |
+      ${f5_logo_rgb_svg}
+  - path: /var/lib/webapp/conf.d/default.conf
+    permissions: '0644'
+    owner: root
+    content: |
+      server {
+        listen 80 default_server;
+%{ if tls_secret_key != "" ~}
+        listen 443 ssl default_server;
+        ssl_certificate /etc/nginx/conf.d/server.pem;
+        ssl_certificate_key /etc/nginx/conf.d/server.key;
+%{ endif }
+        server_name _;
+        location / {
+          root /usr/share/nginx/html;
+          index index.html;
+        }
+      }
+
+runcmd:
+%{ if tls_secret_key != "" ~}
+  - /run/install-server-tls-certs.sh ${tls_secret_key}
+%{ endif ~}
+  - systemctl daemon-reload
+  - systemctl start iptables-webapp.service
+  - systemctl start webapp.service

@@ -1,0 +1,9 @@
+# Example TF vars file
+project_id = "my-project-id"
+id = "my-secret-id"
+secret = "T0pS3cretP@ssword!"
+replication = {
+    "us-east1" = null
+    "us-west1" = null
+}
+accessors = ["serviceAccount:my-service@my-project-id.iam.gserviceaccount.com", "user:jane@doe.com"]
