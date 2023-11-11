@@ -74,8 +74,7 @@ resource "kubernetes_deployment" "app2" {
               // hugepages-2Mi: 100Mi
             }
           }
-          // image_pull_policy = "IfNotPresent"
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
         }
         image_pull_secrets {
           name  = "repo-secret"

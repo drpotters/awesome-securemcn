@@ -49,6 +49,10 @@ data "tfe_outputs" "azure-workload" {
 }
 
 # Google
+data "tfe_outputs" "google" {
+  organization = var.tf_cloud_organization
+  workspace = "xcmcn-ce-gcp"
+}
 data "tfe_outputs" "google-workload" {
   organization = var.tf_cloud_organization
   workspace = "xcmcn-ce-gcp-workload"

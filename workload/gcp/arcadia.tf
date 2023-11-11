@@ -105,7 +105,6 @@ resource "kubernetes_deployment" "app3" {
             }
           }
           image_pull_policy = "IfNotPresent"
-          // image_pull_policy = "Always"
         }
         image_pull_secrets {
           name  = "repo-secret"

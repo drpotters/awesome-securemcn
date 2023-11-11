@@ -9,17 +9,64 @@ resource "volterra_enhanced_firewall_policy" "mcn-nc-efp" {
         rule_list {
             rules {
                 metadata {
+                    name = "internet-to-aws"
+                    disable = false
+                }
+                allow = true
+                advanced_action {
+                    action = "LOG"
+                }
+                all_sources = true
+                destination_label_selector {
+                  expressions = [
+                    "aws.ves.io/prefix in (${var.projectPrefix}), aws.ves.io/owner in (${var.resourceOwner})"
+                  ]
+                }
+                applications {
+                    applications = [
+                        "APPLICATION_HTTP",
+                        "APPLICATION_HTTPS"
+                    ]
+                }
+            }
+            rules {
+                metadata {
+                    name = "internet-to-azure"
+                    disable = false
+                }
+                allow = true
+                advanced_action {
+                    action = "LOG"
+                }
+                all_sources = true
+                destination_prefix_list {
+                  prefixes = [
+                    "${data.tfe_outputs.azure.values.vnetCidr}"
+                  ]
+                }
+                applications {
+                    applications = [
+                        "APPLICATION_HTTP",
+                        "APPLICATION_HTTPS"
+                    ]
+                }
+            }            
+            rules {
+                metadata {
                     name = "allow-${var.projectPrefix}-awsvpc-prefix"
                     disable = false
                 }
+                allow = true
                 advanced_action {
-                    action = "NOLOG"
+                    action = "LOG"
                 }
                 source_label_selector {
                     expressions = [
                         "aws.ves.io/prefix in (${var.projectPrefix})"
                     ]
                 }
+                outside_destinations = true
+                all_traffic = true
                 label_matcher {
                     keys = []
                 }
@@ -29,15 +76,27 @@ resource "volterra_enhanced_firewall_policy" "mcn-nc-efp" {
                     name = "allow-trusted-prefixes"
                     disable = false
                 }
+                allow = true
                 advanced_action {
-                    action = "NOLOG"
+                    action = "LOG"
                 }
                 source_prefix_list {
                     prefixes = [
-                        "10.0.0.0/8", // AWS
-                        "10.1.0.0/8", // Azure
-                        "10.2.0.0/8", // GCP
-                        "10.3.0.0/8"  // GCP other workloads, maybe
+                        // "10.1.0.0/16", // AWS
+                        "${data.tfe_outputs.azure.values.vnetCidr}", // Azure
+                        "${data.tfe_outputs.google.values.cidr_blocks.ce_slo_cidr}", // GCP CE SLO subnet
+                        "${data.tfe_outputs.google.values.cidr_blocks.proxysubnet_cidr}"  // GCP ingress load balancers and proxy-only (SNAT) subnets
+                    ]
+                }
+                destination_label_selector {
+                  expressions = [
+                    "aws.ves.io/prefix in (${var.resourceOwner})"
+                  ]
+                }
+                applications {
+                    applications = [
+                        "APPLICATION_HTTP",
+                        "APPLICATION_HTTPS"
                     ]
                 }
                 label_matcher {
@@ -49,8 +108,9 @@ resource "volterra_enhanced_firewall_policy" "mcn-nc-efp" {
                     name = "deny-all"
                     disable = false
                 }
+                deny = true
                 advanced_action {
-                    action = "NOLOG"
+                    action = "LOG"
                 }
                 label_matcher {
                     keys = []

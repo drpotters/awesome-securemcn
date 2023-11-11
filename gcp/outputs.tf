@@ -37,3 +37,12 @@ output "gcp_region" {
   description = "The the GCP resource is deployed to"
   value = var.gcpRegion
 }
+
+output "cidr_blocks" {
+  description = "CIDR blocks used by GCP"
+  value = {
+      ce_sli_cidr      = var.business_units.bu21.cidr
+      ce_slo_cidr      = var.outside_cidr[0]
+      proxysubnet_cidr = var.outside_cidr[1]
+  }
+}

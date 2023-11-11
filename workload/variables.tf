@@ -19,6 +19,11 @@ variable "domain_name" {
   description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers."
   default     = "shared.acme.com"
 }
+variable "resourceOwner" {
+  type        = string
+  description = "owner of the deployment, for tagging purposes"
+  default     = null
+}
 
 # F5 XC specific values; these will be used in each cloud module
 variable "f5xcTenant" {

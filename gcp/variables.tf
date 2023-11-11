@@ -1,3 +1,9 @@
+#TF Cloud
+variable "tf_cloud_organization" {
+  type = string
+  description = "TF cloud org (Value set in TF cloud)"
+}
+
 # project
 variable "projectPrefix" {
   type        = string
@@ -45,18 +51,12 @@ The set of VPCs to create with overlapping CIDRs.
 EOD
 }
 
-variable "outside_cidr1" {
-  type        = string
-  default     = "100.64.96.0/22"
+variable "outside_cidr" {
+  type        = list
+  default     = [ "100.64.96.0/22", "100.64.100.0/24" ]
   description = <<EOD
-The CIDR to assign to shared outside VPC. Default is '100.64.96.0/20'.
-EOD
-}
-variable "outside_cidr2" {
-  type        = string
-  default     = "100.64.100.0/24"
-  description = <<EOD
-The CIDR to assign to shared outside VPC for ingress internal load balancing. Default is '100.64.100.0/24'.
+The CIDR to assign to shared outside VPC and to the proxy-only subnet for ingress
+load balancing. Default is '100.64.96.0/22' and '100.64.100.0/24'.
 EOD
 }
 

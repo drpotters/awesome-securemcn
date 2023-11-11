@@ -129,14 +129,14 @@ module "outside" {
   subnets = [
     {
       subnet_name           = format("%s-%s-outside", var.projectPrefix, local.buildSuffix)
-      subnet_ip             = var.outside_cidr1
+      subnet_ip             = var.outside_cidr[0]
       subnet_region         = var.gcpRegion
       subnet_private_access = true
     },
     # Subnet designated to internal load balancing
     {
       subnet_name           = format("%s-%s-proxy-only", var.projectPrefix, local.buildSuffix)
-      subnet_ip             = var.outside_cidr2
+      subnet_ip             = var.outside_cidr[1]
       subnet_region         = var.gcpRegion
       subnet_private_access = true
       purpose = "REGIONAL_MANAGED_PROXY"
@@ -147,7 +147,7 @@ module "outside" {
     {
       name		= "allow-proxy-subnet-ingress"
       direction		= "INGRESS"
-      ranges		= [ var.outside_cidr2 ]
+      ranges		= [ var.outside_cidr[1] ]
       allow = [{
         protocol = "all"
         ports = []
@@ -165,6 +165,7 @@ module "outside" {
     {
       name		= "allow-health-checks"
       direction		= "INGRESS"
+      // Health Check sources for External and Global LB resources
       ranges		= [ "35.191.0.0/16", "130.211.0.0/22" ]
       allow = [{
         protocol = "all"
