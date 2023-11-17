@@ -36,3 +36,4 @@ terraform.rc
 .terraform.lock.hcl
 workload/gke_gcloud_auth_plugin_cache
 api.p12
+nginx_repo.jwt
