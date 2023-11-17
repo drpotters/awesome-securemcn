@@ -1,10 +1,14 @@
 resource "kubernetes_service_account" "f5xc-sd-sa" {
+    provider = kubernetes.eks
+
     metadata {
         name = "${var.f5xc-sd-sa}"
     }
 }
 
 resource "kubernetes_secret_v1" "f5xc-sd-sa-secret" {
+  provider = kubernetes.eks
+
   metadata {
     annotations = {
         "kubernetes.io/service-account.name" = "${var.f5xc-sd-sa}"
@@ -18,6 +22,8 @@ resource "kubernetes_secret_v1" "f5xc-sd-sa-secret" {
 }
 
 resource "kubernetes_cluster_role_v1" "f5xc-sd" {
+    provider = kubernetes.eks
+
     metadata {
         name = "f5xc-sd"
     }
@@ -29,6 +35,8 @@ resource "kubernetes_cluster_role_v1" "f5xc-sd" {
     }
 }
 resource "kubernetes_cluster_role_binding_v1" "f5xc-sd-sa-binding" {
+    provider = kubernetes.eks
+    
     metadata {
         name = "f5xc-sd-sa-binding"
     }

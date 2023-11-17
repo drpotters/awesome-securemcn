@@ -45,6 +45,7 @@ resource "volterra_origin_pool" "aws-op" {
   port = local.aws_origin_port
   endpoint_selection     = "LOCAL_PREFERRED"
   loadbalancer_algorithm = "LB_OVERRIDE"
+
 }
 
 resource "volterra_origin_pool" "azure-op" {

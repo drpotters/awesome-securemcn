@@ -2,7 +2,7 @@
 # Also allow well known CIDR blocks. This will eventually be less favorable by additional provider tagging support.
 
 resource "volterra_enhanced_firewall_policy" "mcn-nc-efp" {
-    name = "arcadia-network-connect"
+    name = "${var.projectPrefix}-${local.build_suffix}-enh-fw-pol"
     namespace = "system"
     disable = false
 
@@ -84,8 +84,8 @@ resource "volterra_enhanced_firewall_policy" "mcn-nc-efp" {
                     prefixes = [
                         // "10.1.0.0/16", // AWS
                         "${data.tfe_outputs.azure.values.vnetCidr}", // Azure
-                        "${data.tfe_outputs.google.values.cidr_blocks.ce_slo_cidr}", // GCP CE SLO subnet
-                        "${data.tfe_outputs.google.values.cidr_blocks.proxysubnet_cidr}"  // GCP ingress load balancers and proxy-only (SNAT) subnets
+                        "${data.tfe_outputs.gcp.values.cidr_blocks.ce_slo_cidr}", // GCP CE SLO subnet
+                        "${data.tfe_outputs.gcp.values.cidr_blocks.proxysubnet_cidr}"  // GCP ingress load balancers and proxy-only (SNAT) subnets
                     ]
                 }
                 destination_label_selector {

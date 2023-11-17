@@ -8,7 +8,7 @@ variable "ssh_key" {
   description = "Unneeded for arcadia, only present for warning handling with TF cloud variable set"
 }
 
-# Common solution variables
+# Common solution vars
 variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
@@ -25,21 +25,6 @@ variable "resourceOwner" {
   default     = null
 }
 
-# F5 XC specific values; these will be used in each cloud module
-variable "f5xcTenant" {
-  type        = string
-  description = "The F5 XC tenant to use."
-}
-variable "namespace" {
-  type        = string
-  description = "The F5 XC and K8s namespace into which XC nodes, resources, and app workloads will be deployed."
-}
-variable "f5xc-sd-sa" {
-  type        = string
-  description = "Name of the K8s Service Account F5 XC uses for service discovery"
-  default     = "f5xc-sd-serviceaccount"
-}
-
 # AWS specific vars - if these are not empty/null, AWS resources will be created
 variable "awsRegion" {
   description = "aws region"
@@ -47,7 +32,33 @@ variable "awsRegion" {
   default     = null
 }
 
-# App Workload specific
+# Azure specific vars - if these are not empty/null, Azure resources will be created
+variable "azureLocation" {
+  type        = string
+  default     = null
+  description = "location where Azure resources are deployed (abbreviated Azure Region name)"
+}
+
+# GCP Specific vars - if these are not empty/null, GCP resources will be created
+variable "gcpRegion" {
+  type        = string
+  default     = null
+  description = "region where GCP resources will be deployed"
+}
+
+variable "gcpProjectId" {
+  type        = string
+  default     = null
+  description = "gcp project id"
+}
+
+variable "f5xcCloudCredGCP" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with GCP"
+}
+
+# App Workload specific vars
 # (Optional) Private docker registry to pull container images
 variable "use_private_registry" {
   type        = bool
@@ -73,6 +84,21 @@ variable "registry_email" {
   type        = string
   default     = ""
   description = "Private docker registry account email address"
+}
+
+# XC tenant vars; will be used in each cloud module
+variable "xc_tenant" {
+  type        = string
+  description = "The F5 XC tenant to use."
+}
+variable "namespace" {
+  type        = string
+  description = "The F5 XC and K8s namespace into which XC nodes, resources, and app workloads will be deployed."
+}
+variable "f5xc-sd-sa" {
+  type        = string
+  description = "Name of the K8s Service Account F5 XC uses for service discovery in EKS"
+  default     = "f5xc-sd-serviceaccount"
 }
 
 # XC App Connect

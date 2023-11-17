@@ -1,8 +1,10 @@
 resource "kubernetes_ingress_v1" "app-ingress" {
+  provider = kubernetes.eks
+
   wait_for_load_balancer = true
   metadata {
     name = "app-ingress"
-    namespace = kubernetes_namespace.app.metadata[0].name
+    namespace = kubernetes_namespace.eks-app.metadata[0].name
     annotations = {
       "service.beta.kubernetes.io/aws-load-balancer-internal" = "true"
     }
@@ -84,4 +86,28 @@ resource "kubernetes_ingress_v1" "app-ingress" {
     kubernetes_deployment.main,
     kubernetes_service.main
   ]
+}
+
+resource "kubernetes_ingress_v1" "app3-ingress" {
+  provider = kubernetes.gke
+  
+  wait_for_load_balancer = true
+  metadata {
+    name = "app3-ingress"
+    namespace = kubernetes_namespace.gke-app.metadata[0].name
+    annotations = { "kubernetes.io/ingress.class" = "gce-internal" }
+  }
+  spec {
+    default_backend {
+      // host = try(data.tfe_outputs.nap.values.external_name, data.tfe_outputs.nic.values.external_name)
+      service {
+        name = kubernetes_service.app3.metadata[0].name
+          port {
+            number = kubernetes_service.app3.spec[0].port[0].port
+          }
+      }
+    }
+  }
+
+  depends_on = [ kubernetes_deployment.app3, kubernetes_service.app3 ]
 }

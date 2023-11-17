@@ -1,5 +1,6 @@
 resource "kubernetes_config_map_v1_data" "coredns-eks" {
   provider = kubernetes.eks
+
   metadata {
     name = "coredns"
     namespace = "kube-system"
@@ -11,8 +12,8 @@ resource "kubernetes_config_map_v1_data" "coredns-eks" {
         errors
         health
         hosts {
-          ${data.tfe_outputs.aws-workload.values.service_endpoint_ip} backend.demo.internal
-          ${data.tfe_outputs.google-workload.values.load_balancer_ip} refer-a-friend.demo.internal
+          ${local.aws_service_endpoint_ip} backend.demo.internal
+          ${local.gke_load_balancer_ip} refer-a-friend.demo.internal
           fallthrough
         }
         kubernetes cluster.local in-addr.arpa ip6.arpa {
@@ -28,10 +29,13 @@ resource "kubernetes_config_map_v1_data" "coredns-eks" {
     }
     EOT
   })
+
+  depends_on = [ kubernetes_service.backend, kubernetes_service.app3 ]
 }
 
 resource "kubernetes_config_map_v1_data" "coredns-custom-aks" {
   provider = kubernetes.aks
+
   metadata {
     name = "coredns-custom"
     namespace = "kube-system"
@@ -47,9 +51,11 @@ resource "kubernetes_config_map_v1_data" "coredns-custom-aks" {
       }) */
   data = tomap({"${var.projectPrefix}.override" = <<-EOT
     hosts {
-      ${data.tfe_outputs.aws-workload.values.service_endpoint_ip} backend.demo.internal
+      ${local.aws_service_endpoint_ip} backend.demo.internal
         fallthrough
       }
       EOT
   })
+
+  depends_on = [ kubernetes_service.backend ]
 }
