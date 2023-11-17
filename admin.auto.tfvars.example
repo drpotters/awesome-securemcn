@@ -10,7 +10,7 @@ domain_name = "shared.acme.com"
 
 # F5 XC variables: these will be used to standup F5 XC resources across clouds
 namespace  = "my-namespace"
-f5xcTenant = "my-f5xcTenant-tenant-id"
+xc_tenant = "my-xc_tenant-tenant-id"
 
 # Optional: if provided this public key will allow SSH access to the F5 XC nodes
 # and may be used by AWS/Azure/GCP where an SSH key can be specified

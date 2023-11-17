@@ -24,7 +24,7 @@ resource "volterra_aws_vpc_site" "xc" {
   aws_cred {
     name      = var.f5xcCloudCredAWS
     namespace = "system"
-    tenant    = var.f5xcTenant
+    tenant    = var.xc_tenant
   }
 
   ingress_egress_gw {

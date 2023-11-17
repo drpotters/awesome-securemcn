@@ -34,3 +34,4 @@ override.tf.json
 terraform.rc
 *kubeconfig
 .terraform.lock.hcl
+workload/gke_gcloud_auth_plugin_cache

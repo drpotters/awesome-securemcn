@@ -55,7 +55,7 @@ variable "ssh_key" {
   type        = string
   description = "public key used for authentication in ssh-rsa format"
 }
-variable "f5xcTenant" {
+variable "xc_tenant" {
   type        = string
   description = "Tenant of F5 XC"
 }

@@ -61,7 +61,7 @@ variable "volterraUrl" {
   type        = string
   default     = null
 }
-variable "f5xcTenant" {
+variable "xc_tenant" {
   description = "Tenant of F5 XC"
   type        = string
 }

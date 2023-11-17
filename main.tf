@@ -9,7 +9,6 @@ terraform {
 }
 
 provider "volterra" {
-  api_p12_file = "./api.p12"
   url          = "https://tme-lab-works.console.ves.volterra.io/api"
 }
 
@@ -68,7 +67,7 @@ resource "volterra_site_mesh_group" "smg" {
   virtual_site {
     name = volterra_virtual_site.site.name
     namespace = "shared"
-    tenant = var.f5xcTenant
+    tenant = var.xc_tenant
   }
   full_mesh {
     control_and_data_plane_mesh = true

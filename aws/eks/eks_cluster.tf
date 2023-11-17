@@ -25,7 +25,7 @@ resource "aws_eks_node_group" "private-node-group-1-tf" {
   cluster_name  = aws_eks_cluster.eks-tf.name
   node_group_name = format("%s-private-ng-1-%s", var.projectPrefix, local.buildSuffix)
   node_role_arn  = aws_iam_role.workernodes.arn
-  #subnet_ids =  [for i in aws_subnet.eks-internal: i.id]
+  // subnet_ids =  [for i in aws_subnet.eks-internal: i.id]
   subnet_ids = concat([for e in data.aws_subnet.slo_subnet: e.id])
   instance_types = ["t3.medium"]
   capacity_type = "SPOT"
@@ -51,7 +51,7 @@ resource "aws_eks_node_group" "private-node-group-1-tf" {
   for_each = { for addon in var.eks_addons : addon.name => addon }
   cluster_name = aws_eks_cluster.eks-tf.id
   addon_name = each.value.name
-# addon_version = each.value.version
+  // addon_version = each.value.version
   resolve_conflicts_on_create = "OVERWRITE"
  }
 
@@ -61,9 +61,4 @@ module "eks-kubeconfig" {
   cluster_name = local.cluster_name
 
   depends_on = [aws_eks_cluster.eks-tf]
-}
-
-resource "local_file" "kubeconfig" {
-  content  = module.eks-kubeconfig.kubeconfig
-  filename = "kubeconfig_${local.cluster_name}"
 }

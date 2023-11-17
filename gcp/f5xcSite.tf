@@ -9,7 +9,7 @@
 
   cloud_credentials {
     name      = var.f5xcCloudCredAWS
-    tenant    = var.f5xcTenant
+    tenant    = var.xc_tenant
     namespace = "system"
   }
 
@@ -91,7 +91,7 @@ resource "volterra_gcp_vpc_site" "perimeter" {
   cloud_credentials {
     name      = var.f5xcCloudCredGCP
     namespace = "system"
-    tenant    = var.f5xcTenant
+    tenant    = var.xc_tenant
   }
   gcp_region              = var.gcpRegion
   instance_type           = "n1-standard-4"

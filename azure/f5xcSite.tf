@@ -15,7 +15,7 @@ resource "volterra_azure_vnet_site" "xc" {
   azure_cred {
     name      = var.f5xcCloudCredAzure
     namespace = "system"
-    tenant    = var.f5xcTenant
+    tenant    = var.xc_tenant
   }
 
   ingress_egress_gw {

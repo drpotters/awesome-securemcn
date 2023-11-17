@@ -29,7 +29,7 @@ variable "namespace" {
   description = "The F5 XC namespace into which XC nodes and resources will be managed."
 }
 
-variable "f5xcTenant" {
+variable "xc_tenant" {
   type        = string
   description = "The F5 XC tenant to use."
 }
