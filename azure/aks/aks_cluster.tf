@@ -1,24 +1,4 @@
-locals {
-  resourceGroup = data.tfe_outputs.azure.values.resourceGroup
-  buildSuffix = data.tfe_outputs.root.values.buildSuffix
-  vnetName = data.tfe_outputs.azure.values.vnetName
-}
-
-# Retrieves subnet info
-data "azurerm_subnet" "nodes" {
-  name                 = "public"
-  virtual_network_name = local.vnetName
-  resource_group_name  = local.resourceGroup
-}
-data "azurerm_subnet" "pods" {
-  name                 = "workload"
-  virtual_network_name = local.vnetName
-  resource_group_name  = local.resourceGroup
-}
-data "azurerm_resource_group" "rg" {
-  name = local.resourceGroup
-}
-
+# Create an AKS cluster with nodes on XC CE's SLO subnet
 resource "azurerm_kubernetes_cluster" "aks-cluster" {
   name                = format("%s-%s-aks-cluster", var.projectPrefix, local.buildSuffix)
   location            = var.azureLocation
@@ -27,6 +7,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   network_profile {
     network_plugin = "azure"
+    // UDR for custom route table entries to access internal remote sites and outbound NAT
     outbound_type = "userDefinedRouting"
   }
   default_node_pool {
@@ -40,8 +21,6 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   identity {
     type = "SystemAssigned"
-    /* type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.aks.id] */
   }
 
   tags = {
@@ -49,51 +28,14 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
   }
 }
 
-### IAM For AKS to create an LB in subnets ###
-data "azurerm_subscription" "primary" {
-}
-
-data "azurerm_client_config" "current" {
-}
-
-/* resource "azurerm_user_assigned_identity" "aks" {
-  location            = var.azureLocation
-  name                = "${var.projectPrefix}-${local.buildSuffix}-tf-uai"
-  resource_group_name = local.resourceGroup
-} */
-
-/* data "azurerm_user_assigned_identity" "aks_identity" {
-  resource_group_name = local.resourceGroup
-  // location            = var.azureLocation
-
-  name = "f5xc-tfc-dpotter"
-} */
-
-/* resource "azurerm_role_definition" "aks-role-vnet" {
-  name               = "aks-lb-role"
-  scope              = data.azurerm_subscription.primary.id
-
-  permissions {
-    actions     = ["Microsoft.Resources/subscriptions/resourceGroups/read"]
-    not_actions = []
-  }
-
-  assignable_scopes = [
-    format("%s/resourcegroups/%s", data.azurerm_subscription.primary.id, local.resourceGroup)
-  ]
-} */
-
+# Grant Network Contributor access to allow it to create an internal LB
 resource "azurerm_role_assignment" "system-managed-kubelet" {
-  // scope = data.azurerm_subscription.primary.id
   scope = data.azurerm_resource_group.rg.id
   role_definition_name = "Network Contributor"
-  // principal_id = azurerm_kubernetes_cluster.aks-cluster.identity[0].principal_id
   principal_id = azurerm_kubernetes_cluster.aks-cluster.kubelet_identity[0].object_id
 }
-
 resource "azurerm_role_assignment" "system-managed-aks-cluster" {
   scope = data.azurerm_resource_group.rg.id
   role_definition_name = "Network Contributor"
-  // principal_id = azurerm_kubernetes_cluster.aks-cluster.identity[0].principal_id
   principal_id = azurerm_kubernetes_cluster.aks-cluster.identity[0].principal_id
 }
