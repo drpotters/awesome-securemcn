@@ -3,11 +3,12 @@ variable "tf_cloud_organization" {
   type = string
   description = "TF cloud org (Value set in TF cloud)"
 }
-variable "ssh_key" {
+variable "ssh_id" {
   type        = string
   description = "Unneeded for arcadia, only present for warning handling with TF cloud variable set"
 }
 
+/*
 # Common solution vars
 variable "projectPrefix" {
   type        = string
@@ -56,7 +57,7 @@ variable "f5xcCloudCredGCP" {
   type        = string
   default     = null
   description = "F5 XC Cloud Credential to use with GCP"
-}
+} */
 
 # App Workload specific vars
 # (Optional) Private docker registry to pull container images
@@ -87,14 +88,14 @@ variable "registry_email" {
 }
 
 # XC tenant vars; will be used in each cloud module
-variable "xc_tenant" {
+/* variable "xc_tenant" {
   type        = string
   description = "The F5 XC tenant to use."
 }
 variable "namespace" {
   type        = string
   description = "The F5 XC and K8s namespace into which XC nodes, resources, and app workloads will be deployed."
-}
+} */
 variable "f5xc-sd-sa" {
   type        = string
   description = "Name of the K8s Service Account F5 XC uses for service discovery in EKS"

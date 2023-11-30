@@ -17,9 +17,9 @@ variable "resourceOwner" {
   default     = null
 }
 
-variable "domain_name" {
+variable "app_domain" {
   type        = string
-  default     = "shared.acme.com"
+  default     = "mcn-demo.int"
   description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers. Default is 'shared.acme.com'."
 }
 
@@ -55,15 +55,58 @@ variable "f5xcCloudCredAWS" {
 variable "awsAz1" {
   description = "Availability Zone #"
   type        = string
-  default = "az1"
+  default     = "az1"
 }
 variable "awsAz2" {
   description = "Availability Zone #"
   type        = string
-  default = "az2"
+  default     = "az2"
+}
+variable "aws_cidr" {
+  type = list(object({
+    vpcCidr         = string,
+    publicSubnets   = list(string),
+    sliSubnets      = list(string),
+    workloadSubnets = list(string),
+    privateSubnets  = list(string)
+  }))
+  default = [{
+    vpcCidr         = "10.1.0.0/16",
+    publicSubnets   = ["10.1.10.0/24", "10.1.110.0/24"],
+    sliSubnets      = ["10.1.20.0/24", "10.1.120.0/24"],
+    workloadSubnets = ["10.1.30.0/24", "10.2.130.0/24"],
+    privateSubnets  = ["10.1.52.0/24", "10.1.152.0/24"]
+  }]
 }
 
 # Azure specific vars - if these are not empty/null, Azure resources will be created
+variable "azure_cidr" {
+  type = list(object({
+    vnet = list(object({
+      vnetCidr = string
+    })),
+    subnets = list(object({
+      public              = string
+      sli                 = string
+      workload            = string
+      AzureFirewallSubnet = string
+      private             = string
+    }))
+  }))
+  default = [{
+      vnet = [{
+        vnetCidr = "10.2.0.0/16"
+      }],
+      subnets = [{
+        public              = "10.2.10.0/24"
+        sli                 = "10.2.20.0/24"
+        workload            = "10.2.30.0/24"
+        AzureFirewallSubnet = "10.2.40.0/24"
+        private             = "10.2.52.0/24"
+      }]
+  }]
+}
+
 variable "azureLocation" {
   type        = string
   default     = null
@@ -77,6 +120,21 @@ variable "f5xcCloudCredAzure" {
 }
 
 # GCP Specific vars - if these are not empty/null, GCP resources will be created
+variable "gcp_cidr" {
+  type = list(object({
+    network     = string,
+    sli         = string,
+    slo         = string,
+    proxysubnet = string
+  }))
+  default = [{
+    network     = "", // GCP doesn't require a base network CIDR
+    sli         = "10.3.0.0/16",
+    slo         = "100.64.96.0/22",
+    proxysubnet = "100.64.100.0/24"
+  }]
+}
+
 variable "gcpRegion" {
   type        = string
   default     = null
@@ -96,7 +154,7 @@ variable "f5xcCloudCredGCP" {
 }
 
 variable "commonSiteLabels" {
-  type        = map
+  type        = map(any)
   default     = null
   description = "A common collection of labels (tags) to be assigned to each CE Site"
 }
@@ -109,7 +167,7 @@ variable "commonClientIP" {
 
 #TF Cloud
 variable "tf_cloud_organization" {
-  type = string
+  type        = string
   description = "TF cloud org (Value set in TF cloud)"
 }
 

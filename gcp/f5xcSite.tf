@@ -1,5 +1,5 @@
 /* resource "volterra_gcp_vpc_site" "xc" {
-  name      = format("%s-gcp-%s", var.projectPrefix, local.buildSuffix)
+  name      = format("%s-gcp-%s", local.projectPrefix, local.buildSuffix)
   namespace = "system"
 
   // One of the arguments from this list "default_blocked_services blocked_services" must be set
@@ -80,29 +80,36 @@
 
 # Create a GCP VPC site
 resource "volterra_gcp_vpc_site" "perimeter" {
-  name        = format("%s-gcp-%s", var.projectPrefix, local.buildSuffix)
+  name        = format("%s-gcp-%s", local.projectPrefix, local.buildSuffix)
   namespace   = "system"
-  description = format("GCP VPC Site (%s-%s)", var.projectPrefix, local.buildSuffix)
+  description = format("GCP VPC Site (%s-%s)", local.projectPrefix, local.buildSuffix)
   annotations = local.volterra_common_annotations
   coordinates {
-    latitude  = module.region_locations.lookup[var.gcpRegion].latitude
-    longitude = module.region_locations.lookup[var.gcpRegion].longitude
+    latitude  = module.region_locations.lookup[local.gcpRegion].latitude
+    longitude = module.region_locations.lookup[local.gcpRegion].longitude
   }
   cloud_credentials {
-    name      = var.f5xcCloudCredGCP
+    name      = local.f5xcCloudCredGCP
     namespace = "system"
-    tenant    = var.xc_tenant
+    tenant    = local.xc_tenant
   }
-  gcp_region              = var.gcpRegion
+  gcp_region              = local.gcpRegion
   instance_type           = "n1-standard-4"
   logs_streaming_disabled = true
-  ssh_key                 = var.ssh_key
+  ssh_key                 = var.ssh_id
   ingress_egress_gw {
     gcp_certified_hw = "gcp-byol-multi-nic-voltmesh"
     node_number      = var.num_volterra_nodes
     gcp_zone_names   = local.zones
     #no_forward_proxy = true
     forward_proxy_allow_all  = false
+
+    active_enhanced_firewall_policies {
+      enhanced_firewall_policies {
+        name = "${local.projectPrefix}-${local.buildSuffix}-enh-fw-pol"
+      }
+    }
+
     // no_global_network        = true
     global_network_list {
         global_network_connections {

@@ -8,7 +8,7 @@ variable "gke_num_nodes" {
   description = "number of gke nodes"
 }
 
-variable "projectPrefix" {
+/* variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
   default     = "mcn-demo"
@@ -25,4 +25,4 @@ variable "gcpProjectId" {
   type        = string
   default     = null
   description = "gcp project id"
-}
+} */

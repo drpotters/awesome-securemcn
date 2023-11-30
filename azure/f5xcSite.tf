@@ -3,19 +3,19 @@
 ############################ F5 XC Azure Vnet Sites ############################
 
 resource "volterra_azure_vnet_site" "xc" {
-  name                    = format("%s-azure-%s", var.projectPrefix, local.build_suffix)
+  name                    = format("%s-azure-%s", local.projectPrefix, local.buildSuffix)
   namespace               = "system"
   azure_region            = azurerm_resource_group.rg.location
   resource_group          = local.f5xcResourceGroup
   machine_type            = "Standard_D3_v2"
-  ssh_key                 = var.ssh_key
+  ssh_key                 = local.ssh_id
   logs_streaming_disabled = true
   no_worker_nodes         = true
 
   azure_cred {
-    name      = var.f5xcCloudCredAzure
+    name      = local.f5xcCloudCredAzure
     namespace = "system"
-    tenant    = var.xc_tenant
+    tenant    = local.xc_tenant
   }
 
   ingress_egress_gw {
@@ -25,6 +25,12 @@ resource "volterra_azure_vnet_site" "xc" {
     no_network_policy        = true
     no_outside_static_routes = true
     no_inside_static_routes  = true
+
+    active_enhanced_firewall_policies {
+      enhanced_firewall_policies {
+        name = "${local.projectPrefix}-${local.buildSuffix}-enh-fw-pol"
+      }
+    }
 
     global_network_list {
         global_network_connections {
@@ -106,7 +112,7 @@ resource "volterra_tf_params_action" "apply" {
   wait_for_action  = true
   ignore_on_update = false
 
-  depends_on = [volterra_azure_vnet_site.xc]
+  depends_on = [volterra_azure_vnet_site.xc, module.network]
 }
 
 ############################ NIC Info ############################

@@ -3,8 +3,8 @@
 # Create Elastic IP
 resource "aws_eip" "main" {
   tags = {
-    resource_owner = local.resource_owner
-    Name          = format("%s-eip-%s", var.projectPrefix, local.buildSuffix)
+    resource_owner = local.resourceOwner
+    Name          = format("%s-eip-%s", local.projectPrefix, local.buildSuffix)
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_eip" "main" {
 #
 #  tags = {
 #    resource_owner = local.resource_owner
-#    Name          = format("%s-ngw-%s", var.projectPrefix, local.buildSuffix)
+#    Name          = format("%s-ngw-%s", local.projectPrefix, local.buildSuffix)
 #  }
 #}
 
@@ -36,41 +36,15 @@ module subnet_addrs {
   ]
 }
 
-data "aws_subnet" "workload_subnet" {
-  vpc_id = local.vpc_id
-  filter {
-    name = "tag:Name"
-    values = ["*workload-${local.buildSuffix}"]
-  }
-}
-
-data "aws_subnet" "inside_subnet" {
-  vpc_id = local.vpc_id
-  filter {
-    name = "tag:Name"
-    values = ["*inside-${local.buildSuffix}"]
-  }
-}
-
-data "aws_subnet" "slo_subnet" {
-  for_each          = {for i, az_name in local.azs: i => az_name}
-  availability_zone = local.azs[each.key]
-  vpc_id = local.vpc_id
-  filter {
-    name = "tag:Name"
-    values = ["*vpc-${local.buildSuffix}"]
-  }
-}
-
 resource "aws_subnet" "eks-internal" {
   for_each          = toset(local.azs)
   vpc_id            = local.vpc_id
   cidr_block        = module.subnet_addrs[each.key].network_cidr_blocks["eks-internal"]
   availability_zone = each.key
   tags              = {
-    Name = format("%s-eks-int-subnet-%s",var.projectPrefix,each.key)
+    Name = format("%s-eks-int-subnet-%s",local.projectPrefix,each.key)
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"                      = "1"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
 }
 resource "aws_subnet" "eks-external" {
@@ -80,7 +54,7 @@ resource "aws_subnet" "eks-external" {
   map_public_ip_on_launch = true
   availability_zone = each.key
   tags              = {
-    Name = format("%s-eks-ext-subnet-%s",var.projectPrefix,each.key)
+    Name = format("%s-eks-ext-subnet-%s",local.projectPrefix,each.key)
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     // "kubernetes.io/role/elb"                      = "1"
     "kubernetes.io/role/internal-elb"                = "1"
@@ -93,7 +67,7 @@ resource "aws_subnet" "eks-external" {
 #    nat_gateway_id = aws_nat_gateway.main.id
 #  }
 #  tags = {
-#    Name = format("%s-eks-rt-%s", var.projectPrefix, local.buildSuffix)
+#    Name = format("%s-eks-rt-%s", local.projectPrefix, local.buildSuffix)
 #  }
 #}
 #resource "aws_route_table_association" "internal-subnet-association" {

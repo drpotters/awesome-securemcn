@@ -13,8 +13,8 @@ resource "google_container_cluster" "primary" {
   initial_node_count       = 1
   networking_mode = "VPC_NATIVE"
   ip_allocation_policy {
-    cluster_ipv4_cidr_block = "10.3.0.0/17"
-    services_ipv4_cidr_block = "10.3.128.0/17"
+    cluster_ipv4_cidr_block = cidrsubnet(local.gcp_cidr[0].sli,2,0)
+    services_ipv4_cidr_block = cidrsubnet(local.gcp_cidr[0].sli,2,1)
   }
 
   network    = local.network_name

@@ -74,7 +74,7 @@ data "kubernetes_service_v1" "api" {
 }
 data "azurerm_network_interface" "master-0" {
   name = "master-0-slo"
-  resource_group_name = format("%s-%s-f5xc", local.project_prefix, local.build_suffix)
+  resource_group_name = format("%s-%s-f5xc", local.projectPrefix, local.buildSuffix)
 }
 
 # GCP
@@ -84,9 +84,9 @@ data "google_service_account" "me" {
 }
 data "google_compute_network" "lb-net" {
   name = data.tfe_outputs.gcp.values.network_name_outside
-  project = var.gcpProjectId
+  project = local.gcpProjectId
 }
 data "google_compute_subnetwork" "lb-proxy-subnet" {
-  name = "${local.project_prefix}-${local.build_suffix}-proxy-only"
-  project = var.gcpProjectId
+  name = "${local.projectPrefix}-${local.buildSuffix}-proxy-only"
+  project = local.gcpProjectId
 }

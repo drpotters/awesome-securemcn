@@ -25,7 +25,7 @@ provider "volterra" {
 resource "random_shuffle" "zones" {
   input = var.azureZones
   keepers = {
-    azureLocation = var.azureLocation
+    azureLocation = local.azureLocation
   }
 }
 
@@ -46,11 +46,11 @@ locals {
 
 # Create Resource Groups
 resource "azurerm_resource_group" "rg" {
-  name     = format("%s-%s-tfc", var.projectPrefix, local.build_suffix)
-  location = var.azureLocation
+  name     = format("%s-%s-tfc", local.projectPrefix, local.buildSuffix)
+  location = local.azureLocation
 
   tags = {
-    Owner = var.resourceOwner
+    Owner = local.resourceOwner
   }
 }
 
@@ -62,15 +62,15 @@ module "network" {
   version             = ">= 4.0.0"
   use_for_each        = false
   resource_group_name = azurerm_resource_group.rg.name
-  vnet_name           = format("%s-vnet-%s", var.projectPrefix, local.build_suffix)
-  vnet_location       = var.azureLocation
-  address_space       = [var.vnetCidr]
-  subnet_prefixes     = var.subnetPrefixes
-  subnet_names        = var.subnetNames
+  vnet_name           = format("%s-vnet-%s", local.projectPrefix, local.buildSuffix)
+  vnet_location       = local.azureLocation
+  address_space       = [local.azure_cidr[0].vnet[0].vnetCidr]
+  subnet_prefixes     = nonsensitive(values(local.azure_cidr[0].subnets[0]))
+  subnet_names        = nonsensitive(keys(local.azure_cidr[0].subnets[0]))
 
   tags = {
-    Name  = format("%s-vnet-%s", var.projectPrefix, local.build_suffix)
-    Owner = var.resourceOwner
+    Name  = format("%s-vnet-%s", local.projectPrefix, local.buildSuffix)
+    Owner = local.resourceOwner
   }
 
   subnet_delegation = {
@@ -150,7 +150,7 @@ resource "azurerm_route_table" "mcn-networks" {
 
   route {
     name = "to_MCN-aws"
-    address_prefix = "10.1.0.0/16"
+    address_prefix = local.aws_cidr[0].vpcCidr
     next_hop_in_ip_address = local.xc_site_slo_ip
     next_hop_type = "VirtualAppliance"
   }
@@ -174,7 +174,7 @@ resource "azurerm_subnet_route_table_association" "public" {
 
 # Webserver Security Group
 resource "azurerm_network_security_group" "webserver" {
-  name                = format("%s-nsg-webservers-%s", var.projectPrefix, local.build_suffix)
+  name                = format("%s-nsg-webservers-%s", local.projectPrefix, local.buildSuffix)
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -211,12 +211,12 @@ resource "azurerm_network_security_group" "webserver" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "8080"
-    source_address_prefix      = var.vnetCidr
+    source_address_prefix      = local.azure_cidr[0].vnet[0].vnetCidr
     destination_address_prefix = "*"
   }
 
   tags = {
-    Owner = var.resourceOwner
+    Owner = local.resourceOwner
   }
 
   depends_on = [azurerm_resource_group.rg]

@@ -54,11 +54,6 @@ variable "eks_addons" {
     }
   ]
 }
-variable "ssh_key" {
-  type        = string
-  default     = null
-  description = "Unneeded for EKS, only present for warning handling with TF cloud variable set"
-}
 
 variable "commonClientIP" {
   type        = string
@@ -73,13 +68,20 @@ variable "buildSuffix" {
 variable "awsAz1" {
   description = "Availability Zone #"
   type        = string
-  default = "az1"
+  default = null
 }
 variable "awsAz2" {
   description = "Availability Zone #"
   type        = string
-  default = "az2"
+  default = null
 }
+
+variable "ssh_id" {
+  description = "SSH public key used to create an EC2 keypair"
+  type        = string
+  default     = null
+}
+/*
 variable "vpcId" {
   description = "AWS VPC ID"
   type = string
@@ -105,3 +107,4 @@ variable privateSubnets {
   type        = list(any)
   default     = ["10.1.40.0/24", "10.1.140.0/24"]
 }
+*/

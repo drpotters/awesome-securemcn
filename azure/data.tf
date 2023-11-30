@@ -19,7 +19,15 @@ data "tfe_outputs" "root" {
 
 data "azurerm_network_interface" "master-0" {
   name = "master-0-slo"
-  resource_group_name = format("%s-%s-f5xc", local.project_prefix, local.build_suffix)
+  resource_group_name = format("%s-%s-f5xc", local.projectPrefix, local.buildSuffix)
 
   depends_on = [ volterra_tf_params_action.apply ]
+}
+
+data "azurerm_subnet" "public" {
+  name = "public"
+  virtual_network_name = module.network.vnet_name
+  resource_group_name = azurerm_resource_group.rg.name
+
+  depends_on = [ module.network ]
 }

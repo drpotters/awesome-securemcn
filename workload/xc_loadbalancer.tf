@@ -1,8 +1,8 @@
 # Create XC LB config
 
 resource "volterra_origin_pool" "aws-op" {
-  name                   = format("%s-xcop-aws-%s", local.project_prefix, local.build_suffix)
-  namespace              = var.namespace
+  name                   = format("%s-xcop-aws-%s", local.projectPrefix, local.buildSuffix)
+  namespace              = local.namespace
   description            = format("Origin pool pointing to origin server %s", local.aws_origin_server)
   dynamic "origin_servers" {
     for_each = local.dns_origin_pool ? [1] : []
@@ -49,8 +49,8 @@ resource "volterra_origin_pool" "aws-op" {
 }
 
 resource "volterra_origin_pool" "azure-op" {
-  name                   = format("%s-xcop-azure-%s", local.project_prefix, local.build_suffix)
-  namespace              = var.namespace
+  name                   = format("%s-xcop-azure-%s", local.projectPrefix, local.buildSuffix)
+  namespace              = local.namespace
   description            = format("Origin pool pointing to origin server %s", local.aws_origin_server)
   dynamic "origin_servers" {
     for_each = local.dns_origin_pool ? [1] : []
@@ -81,6 +81,11 @@ resource "volterra_origin_pool" "azure-op" {
       }
     }
   }
+  lifecycle {
+        # Force replacement of the origin_pool any time the IP in the cloud provider changes
+        # Workaround note: In-place update doesn't currently work for the provider (2023-11-20)
+        replace_triggered_by = [ kubernetes_service.app2.status[0].load_balancer[0].ingress[0].ip ]
+  }
   /* dynamic "origin_servers" {
     for_each = local.dns_origin_pool ? [] : [1]
     content {
@@ -97,7 +102,7 @@ resource "volterra_origin_pool" "azure-op" {
 
 resource "volterra_app_type" "app-type" {
   count = length(var.xc_app_type) != 0 ? 1 : 0
-  name = format("%s-app-type-%s", local.project_prefix, local.build_suffix)
+  name = format("%s-app-type-%s", local.projectPrefix, local.buildSuffix)
   namespace = "shared"
   features {  
         type = "USER_BEHAVIOR_ANALYSIS" 
@@ -108,18 +113,18 @@ resource "volterra_app_type" "app-type" {
 }
 
 resource "volterra_http_loadbalancer" "lb_https" {
-  name      = format("%s-xclb-%s", local.project_prefix, local.build_suffix)
-  namespace = var.namespace
+  name      = format("%s-xclb-%s", local.projectPrefix, local.buildSuffix)
+  namespace = local.namespace
   labels = {
       "ves.io/app_type" = length(var.xc_app_type) != 0 ? volterra_app_type.app-type[0].name : null
   }
-  description = format("HTTPS loadbalancer object for %s origin server", local.project_prefix)  
-  domains = [var.app_domain]
+  description = format("HTTPS loadbalancer object for %s origin server", local.projectPrefix)  
+  domains = [ local.app_domain ]
   advertise_on_public_default_vip = true
   default_route_pools {
       pool {
         name = volterra_origin_pool.aws-op.name
-        namespace = var.namespace
+        namespace = local.namespace
       }
       weight = 1
     }
@@ -132,7 +137,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
       origin_pools {
         pool {
           name= volterra_origin_pool.azure-op.name
-          namespace = var.namespace
+          namespace = local.namespace
         }
         weight = 1
       }
@@ -149,7 +154,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
   }
   /* app_firewall {
     name = volterra_app_firewall.waap-tf.name
-    namespace = var.namespace
+    namespace = local.namespace
   } */
   // disable_waf                     = false
   disable_waf                     = true
@@ -173,7 +178,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
     content {
       name = volterra_api_definition.api-def[0].name
       namespace = volterra_api_definition.api-def[0].namespace
-      tenant = var.xc_tenant
+      tenant = local.xc_tenant
     }
   }
 
@@ -182,7 +187,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
     content {
       api_groups_rules {
         metadata {
-          name = format("%s-apip-deny-rule-%s", local.project_prefix, local.build_suffix)
+          name = format("%s-apip-deny-rule-%s", local.projectPrefix, local.buildSuffix)
         }
         action {
           deny = true
@@ -192,7 +197,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
       }
       api_groups_rules {
         metadata {
-          name = format("%s-apip-allow-rule-%s", local.project_prefix, local.build_suffix)
+          name = format("%s-apip-allow-rule-%s", local.projectPrefix, local.buildSuffix)
         }
         action {
           deny = false
@@ -215,7 +220,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
         js_download_path = "/common.js"
         protected_app_endpoints {
           metadata {
-            name = format("%s-bot-rule-%s", local.project_prefix, local.build_suffix)
+            name = format("%s-bot-rule-%s", local.projectPrefix, local.buildSuffix)
           }
           http_methods = ["METHOD_POST", "METHOD_PUT"]
           mitigation {
@@ -255,7 +260,7 @@ resource "volterra_http_loadbalancer" "lb_https" {
     for_each = var.xc_ddos_def ? [1] : []
     content {
       metadata {
-        name = format("%s-ddos-rule-%s", local.project_prefix, local.build_suffix)
+        name = format("%s-ddos-rule-%s", local.projectPrefix, local.buildSuffix)
       }
       block = true
       ddos_client_source {

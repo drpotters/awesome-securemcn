@@ -1,7 +1,7 @@
 # Create an AKS cluster with nodes on XC CE's SLO subnet
 resource "azurerm_kubernetes_cluster" "aks-cluster" {
-  name                = format("%s-%s-aks-cluster", var.projectPrefix, local.buildSuffix)
-  location            = var.azureLocation
+  name                = format("%s-%s-aks-cluster", local.projectPrefix, local.buildSuffix)
+  location            = local.azureLocation
   resource_group_name = local.resourceGroup
   dns_prefix          = "xc-aks"
 

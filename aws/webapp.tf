@@ -31,8 +31,8 @@ resource "aws_eip" "webserver" {
   vpc      = true
 
   tags = {
-    Name  = format("%s-eip-webserver-%s", var.projectPrefix, local.buildSuffix)
-    Owner = var.resourceOwner
+    Name  = format("%s-eip-webserver-%s", local.projectPrefix, local.buildSuffix)
+    Owner = local.resourceOwner
   }
 }
 
@@ -42,13 +42,13 @@ resource "aws_instance" "webserver" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.large"
   subnet_id              = aws_subnet.private.id
-  private_ip             = cidrhost(var.privateSubnets[0], 200)
+  private_ip             = cidrhost(nonsensitive(local.aws_cidr[0].privateSubnets[0]), 200)
   vpc_security_group_ids = [aws_security_group.webserver.id]
   key_name               = aws_key_pair.sshKey.id
   user_data              = local.user_data
 
   tags = {
-    Name  = format("%s-webserver-%s", var.projectPrefix, local.buildSuffix)
-    Owner = var.resourceOwner
+    Name  = format("%s-webserver-%s", local.projectPrefix, local.buildSuffix)
+    Owner = local.resourceOwner
   }
 }

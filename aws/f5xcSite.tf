@@ -1,12 +1,12 @@
 ############################ F5 XC AWS VPC Sites ############################
 
 resource "volterra_aws_vpc_site" "xc" {
-  name                    = format("%s-aws-%s", var.projectPrefix, local.buildSuffix)
+  name                    = format("%s-aws-%s", local.projectPrefix, local.buildSuffix)
   namespace               = "system"
-  aws_region              = var.awsRegion
+  aws_region              = local.awsRegion
   instance_type           = "t3.xlarge"
   disk_size               = "80"
-  ssh_key                 = var.ssh_key
+  ssh_key                 = var.ssh_id
   logs_streaming_disabled = true
   no_worker_nodes         = true
 
@@ -15,26 +15,55 @@ resource "volterra_aws_vpc_site" "xc" {
     blocked_sevice {
       dns                 = true
       network_type        = "VIRTUAL_NETWORK_SITE_LOCAL"
-      ssh                 = true
+      ssh                 = false
       web_user_interface  = true
     }
   }
   #default_blocked_services = { }
 
   aws_cred {
-    name      = var.f5xcCloudCredAWS
+    name      = local.f5xcCloudCredAWS
     namespace = "system"
-    tenant    = var.xc_tenant
+    tenant    = local.xc_tenant
   }
 
   ingress_egress_gw {
     aws_certified_hw         = "aws-byol-multi-nic-voltmesh"
     forward_proxy_allow_all  = true
-
     no_network_policy        = true
-    no_outside_static_routes = true
     no_inside_static_routes  = true
-
+    
+    outside_static_routes {
+      static_route_list {
+          custom_static_route {
+            subnets {
+              ipv4 {
+                prefix = local.aws_cidr_prefix_split[0]
+                plen = local.aws_cidr_prefix_split[1]
+              }
+            }
+            nexthop {
+              type = "NEXT_HOP_USE_CONFIGURED"
+              nexthop_address {
+                ipv4 {
+                  addr = cidrhost(local.aws_cidr[0].publicSubnets[0],1)
+                }
+              }
+            }
+            attrs = [
+             "ROUTE_ATTR_INSTALL_FORWARDING",
+             "ROUTE_ATTR_INSTALL_HOST"
+            ]
+          }
+      }
+    }
+    
+    active_enhanced_firewall_policies {
+      enhanced_firewall_policies {
+        name = "${local.projectPrefix}-${local.buildSuffix}-enh-fw-pol"
+      }
+    }
+    
     global_network_list {
         global_network_connections {
           slo_to_global_dr {
@@ -112,40 +141,4 @@ resource "volterra_tf_params_action" "apply" {
   ignore_on_update = false
 
   depends_on = [volterra_aws_vpc_site.xc]
-}
-
-############################ Collect XC Node Info ############################
-
-# Instance info
-data "aws_instances" "xc" {
-  instance_state_names = ["running"]
-  instance_tags = {
-    "ves-io-site-name" = volterra_aws_vpc_site.xc.name
-  }
-
-  depends_on = [volterra_tf_params_action.apply]
-}
-
-# NIC info
-data "aws_network_interface" "xc_sli" {
-  filter {
-    name   = "attachment.instance-id"
-    values = [data.aws_instances.xc.ids[0]]
-  }
-  filter {
-    name   = "tag:ves.io/interface-type"
-    values = ["site-local-inside"]
-  }
-}
-
-# NIC info
-data "aws_network_interface" "xc_slo" {
-  filter {
-    name   = "attachment.instance-id"
-    values = [data.aws_instances.xc.ids[0]]
-  }
-  filter {
-    name   = "tag:ves.io/interface-type"
-    values = ["site-local-outside"]
-  }
 }

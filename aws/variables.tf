@@ -13,7 +13,7 @@ variable "aws_access_secret" {
   type = string
   default = ""
 }
-variable "vpcid" {
+/* variable "vpcid" {
   description = "AWS VPC to use for the EKS cluster and subnets"
   type = string
   default = ""
@@ -30,8 +30,8 @@ variable "awsRegion" {
   description = "aws region"
   type        = string
   default     = "us-west-2"
-}
-variable "ssh_key" {
+} */
+variable "ssh_id" {
   description = "SSH public key used to create an EC2 keypair"
   type        = string
   default     = null
@@ -51,6 +51,7 @@ variable "awsAz3" {
   type        = string
   default     = null
 }
+/*
 variable "volterraP12" {
   description = "Location of F5 XC p12 file"
   type        = string
@@ -72,7 +73,7 @@ variable "f5xcCloudCredAWS" {
 variable "namespace" {
   description = "F5 XC application namespace"
   type        = string
-}
+} */
 
 variable "domain_name" {
   type        = string
@@ -94,7 +95,7 @@ variable "commonSiteLabels" {
   default     = {}
   description = "An optional list of labels to apply to all CE Sites."
 }
-variable "commonClientIP" {
+/* variable "commonClientIP" {
   type        = string
   default     = null
   description = "Client IP is used for security access groups"
@@ -123,28 +124,9 @@ variable "workloadSubnets" {
   type        = list(any)
   default     = ["10.1.30.0/24", "10.1.130.0/24"]
   description = "Workload subnet address prefixes for F5 XC"
-}
+} */
 variable "webapp_ami_search_name" {
   type        = string
   default     = "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
   description = "AWS AMI search filter to find correct web app (Ubuntu) for region"
-}
-variable "xc_tf_output_raw" {
-  type        = map(any)
-  default     = {}
-  description = "Stuff Valentin says won't work"
-}
-variable "xc_tf_output" {
-  type        = map(string)
-  default     = {}
-  description = "Stuff Valentin says won't work"
-}
-variable "xc_tf_route_table" {
-  type        = map(string)
-  default     = {}
-  description = "Stuff Valentin says won't work"
-}
-variable "tf_output" {
-  type = map(string)
-  default = {}
 }

@@ -35,6 +35,6 @@ provider "azurerm" {
   features {}
 }
 provider "google" {
-  region  = var.gcpRegion
-  project = var.gcpProjectId
+  region  = local.gcpRegion
+  project = local.gcpProjectId
 }

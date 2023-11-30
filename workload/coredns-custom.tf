@@ -49,7 +49,7 @@ resource "kubernetes_config_map_v1_data" "coredns-custom-aks" {
         }
         EOT
       }) */
-  data = tomap({"${var.projectPrefix}.override" = <<-EOT
+  data = tomap({"${local.projectPrefix}.override" = <<-EOT
     hosts {
       ${local.aws_service_endpoint_ip} backend.demo.internal
         fallthrough

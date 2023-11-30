@@ -1,7 +1,7 @@
 
 #Custer SG
 resource "aws_security_group" "eks_cluster" {
-  name        = format("%s-eks-cluster-sg-%s", var.projectPrefix, local.buildSuffix)
+  name        = format("%s-%s-eks-cluster-sg", local.projectPrefix, local.buildSuffix)
   description = "Cluster communication with worker nodes"
   vpc_id      = local.vpc_id
 
@@ -9,16 +9,17 @@ resource "aws_security_group" "eks_cluster" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["10.1.0.0/16"]
+    cidr_blocks = [local.aws_cidr[0].vpcCidr]
   }
 
   tags = {
-    Name = format("%s-eks-cluster-sg-%s", var.projectPrefix, local.buildSuffix)
+    Name = format("%s-%s-eks-cluster-sg", local.projectPrefix, local.buildSuffix)
   }
 }
 #Cluster SG rules 
-#Ingress is replaced by aws_security_group.eks_cluster rule(s) - dpotter 10/13/2023
-/* resource "aws_security_group_rule" "cluster_inbound" {
+#Moved to aws_security_group.eks_cluster ingress argument above - dpotter 10/13/2023
+/*
+resource "aws_security_group_rule" "cluster_inbound" {
   description              = "Allow worker nodes to communicate with the cluster API Server"
   from_port                = 443
   protocol                 = "tcp"
@@ -26,7 +27,8 @@ resource "aws_security_group" "eks_cluster" {
   source_security_group_id = aws_security_group.eks_nodes.id
   to_port                  = 443
   type                     = "ingress"
-} */
+}
+*/
 resource "aws_security_group_rule" "cluster_outbound" {
   description              = "Allow cluster API Server to communicate with the worker nodes"
   from_port                = 1024
@@ -39,7 +41,7 @@ resource "aws_security_group_rule" "cluster_outbound" {
 
 #Nodes SG
 resource "aws_security_group" "eks_nodes" {
-  name        = format("%s-eks-node-sg-%s", var.projectPrefix, local.buildSuffix)
+  name        = format("%s-%s-eks-node-sg", local.projectPrefix, local.buildSuffix)
   description = "Security group for all nodes in the cluster"
   vpc_id      = local.vpc_id
 
@@ -49,9 +51,15 @@ resource "aws_security_group" "eks_nodes" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [local.aws_cidr[0].vpcCidr]
+  }
 
   tags = {
-    Name = format("%s-eks-node-sg-%s", var.projectPrefix, local.buildSuffix)
+    Name = format("%s-%s-eks-node-sg", local.projectPrefix, local.buildSuffix)
     "kubernetes.io/cluster/aws_eks_cluster.eks-tf.name" = "owned"
   }
 }
@@ -75,3 +83,24 @@ resource "aws_security_group_rule" "eks_nodes_inbound" {
   type                     = "ingress"
 }
 
+resource "aws_vpc_security_group_ingress_rule" "eks-managed-ingress-80" {
+  description       = "Allow internal and remote network traffic to the workloads"
+  security_group_id = aws_eks_cluster.eks-tf.vpc_config[0].cluster_security_group_id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "tcp"
+  from_port         = 80
+  to_port           = 80
+
+  depends_on  = [ aws_eks_cluster.eks-tf ]
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks-managed-ingress-443" {
+  description       = "Allow internal and remote network traffic to the workloads"
+  security_group_id = aws_eks_cluster.eks-tf.vpc_config[0].cluster_security_group_id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
+
+  depends_on        = [ aws_eks_cluster.eks-tf ]
+}

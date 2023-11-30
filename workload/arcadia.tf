@@ -4,9 +4,9 @@ resource "kubernetes_namespace" "eks-app" {
 
   metadata {
     annotations = {
-      name = var.namespace
+      name = local.namespace
     }
-    name = var.namespace
+    name = local.namespace
   }
 }
 
@@ -82,8 +82,8 @@ resource "kubernetes_deployment" "main" {
               // hugepages-2Mi: 100Mi
             }
           }
-          // image_pull_policy = "IfNotPresent"
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
+          // image_pull_policy = "Always"
         }
         image_pull_secrets {
           name  = "repo-secret"
@@ -149,9 +149,9 @@ resource "kubernetes_namespace" "aks-app" {
 
   metadata {
     annotations = {
-      name = var.namespace
+      name = local.namespace
     }
-    name = var.namespace
+    name = local.namespace
   }
 }
 
@@ -243,9 +243,9 @@ resource "kubernetes_namespace" "gke-app" {
 
   metadata {
     annotations = {
-      name = var.namespace
+      name = local.namespace
     }
-    name = var.namespace
+    name = local.namespace
   }
 
   depends_on = [ kubernetes_cluster_role_binding_v1.f5xc-sa-binding ]
@@ -342,6 +342,7 @@ resource "kubernetes_deployment" "app3" {
             value = "1"
           }
           #command = [ "/bin/sh" ]
+          #args    = [ "-c", "sudo php-fpm7.2 -nDOd extension=json.so -d extension=curl.so --fpm-config /etc/php/7.2/fpm/pool.d/www.conf; sudo nginx '-g daemon off; error_log /dev/stderr debug;'" ]
           #args    = [ "-c", "sudo /php-fpm-use-www-data.sh && sudo php-fpm7.2 -nDOd extension=json.so -d extension=curl.so --fpm-config /etc/php/7.2/fpm/pool.d/www.conf; sudo nginx '-g daemon off;'" ]
           port {
             container_port = 8080
@@ -354,6 +355,8 @@ resource "kubernetes_deployment" "app3" {
             }
           }
           image_pull_policy = "IfNotPresent"
+          // image_pull_policy = "Always"
+
         }
         image_pull_secrets {
           name  = "repo-secret"

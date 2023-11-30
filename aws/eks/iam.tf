@@ -1,7 +1,7 @@
 
 # Create IAM role for the EKS cluster
 resource "aws_iam_role" "eks-iam-role" {
- name = format("%s-eks-iam-role-%s", var.projectPrefix, local.buildSuffix)
+ name = format("%s-eks-iam-role-%s", local.projectPrefix, local.buildSuffix)
 
  path = "/"
 
@@ -23,7 +23,7 @@ EOF
 
 # IAM role for the EKS cluster to create ingress load balancers
 resource "aws_iam_policy" "eks_cluster_ingress_loadbalancer_creation" {
-    name   = format("%s-eks-cluster-ingress-loadbalancer-%s", var.projectPrefix, local.buildSuffix)
+    name   = format("%s-eks-cluster-ingress-loadbalancer-%s", local.projectPrefix, local.buildSuffix)
     // role   = aws_iam_role.eks-iam-role.name
     policy = jsonencode(
     {
@@ -61,7 +61,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly-EK
 
 # Create IAM role for the worker nodes
 resource "aws_iam_role" "workernodes" {
-  name = format("%s-eks-node-iam-role-%s", var.projectPrefix, local.buildSuffix)
+  name = format("%s-eks-node-iam-role-%s", local.projectPrefix, local.buildSuffix)
  
   assume_role_policy = jsonencode({
    Statement = [{
@@ -96,7 +96,7 @@ resource "aws_iam_role" "workernodes" {
  }
 
  resource "aws_iam_policy" "workernodes_ebs_policy" {
-  name = format("%s-ebs_csi_driver-%s", var.projectPrefix, local.buildSuffix)
+  name = format("%s-ebs_csi_driver-%s", local.projectPrefix, local.buildSuffix)
 
   policy = jsonencode (
 {

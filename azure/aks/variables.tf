@@ -4,7 +4,7 @@ variable "tf_cloud_organization" {
   description = "TF cloud org (Value set in TF cloud)"
 }
 
-variable "projectPrefix" {
+/* variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
   default     = "mcn-demo"
@@ -27,7 +27,7 @@ variable "subnetNames" {
   type        = list(any)
   default     = ["public", "sli", "private"]
   description = "Subnet names"
-}
+} */
 variable "webapp_image_offer_name" {
   type        = string
   default     = "0001-com-ubuntu-server-focal"
@@ -38,10 +38,10 @@ variable "public_address" {
   default     = true
   description = "If true, an ephemeral public IP address will be assigned to the webserver. Default value is 'false'. "
 }
-variable "azureLocation" {
+/* variable "azureLocation" {
   type        = string
   description = "location where Azure resources are deployed (abbreviated Azure Region name)"
-}
+} */
 variable "azureZones" {
   type        = list(any)
   description = "The list of availability zones in a region"
@@ -52,7 +52,7 @@ variable "adminAccountName" {
   description = "admin account name used with instance"
   default     = "ubuntu"
 }
-variable "ssh_key" {
+/* variable "ssh_key" {
   type        = string
   description = "public key used for authentication in ssh-rsa format"
 }
@@ -67,7 +67,7 @@ variable "f5xcCloudCredAzure" {
 variable "namespace" {
   type        = string
   description = "F5 XC application namespace"
-}
+} */
 variable "domain_name" {
   type        = string
   description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers."

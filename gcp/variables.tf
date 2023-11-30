@@ -4,6 +4,7 @@ variable "tf_cloud_organization" {
   description = "TF cloud org (Value set in TF cloud)"
 }
 
+/*
 # project
 variable "projectPrefix" {
   type        = string
@@ -59,6 +60,7 @@ The CIDR to assign to shared outside VPC and to the proxy-only subnet for ingres
 load balancing. Default is '100.64.96.0/22' and '100.64.100.0/24'.
 EOD
 }
+*/
 
 variable "domain_name" {
   type        = string
@@ -100,7 +102,7 @@ variable "commonSiteLabels" {
   description = "An optional list of labels to apply to all CE Sites."
 } 
 
-variable "commonClientIP" {
+/* variable "commonClientIP" {
   type        = string
   default     = null
   description = "Client IP is used for security access groups"
@@ -119,8 +121,9 @@ variable "xc_tenant" {
 The Volterra tenant to use.
 EOD
 }
+*/
 
-variable "ssh_key" {
+variable "ssh_id" {
   type        = string
   default     = ""
   description = <<EOD
@@ -128,7 +131,9 @@ An optional SSH key to add to Volterra nodes.
 EOD
 }
 
+/*
 variable "f5xcCloudCredGCP" {
   description = "Name of the Volterra cloud credentials to use with GCP VPC sites"
   type        = string
 }
+*/

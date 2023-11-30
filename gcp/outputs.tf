@@ -33,7 +33,7 @@ output "subnet_name_outside" {
   value = nonsensitive(module.outside.subnets_names[0])
 }
 
-output "gcp_region" {
+/* output "gcp_region" {
   description = "The the GCP resource is deployed to"
   value = var.gcpRegion
 }
@@ -45,4 +45,4 @@ output "cidr_blocks" {
       ce_slo_cidr      = var.outside_cidr[0]
       proxysubnet_cidr = var.outside_cidr[1]
   }
-}
+} */

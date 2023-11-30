@@ -1,5 +1,5 @@
 resource "helm_release" "nginx-plus-ingress" {
-    name = format("%s-nic-%s", local.project_prefix, local.build_suffix)
+    name = format("%s-nic-%s", local.projectPrefix, local.buildSuffix)
     repository = "https://helm.nginx.com/stable"
     chart = "nginx-ingress"
     namespace = kubernetes_namespace.nginx-ingress.metadata[0].name

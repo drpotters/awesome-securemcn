@@ -53,7 +53,7 @@ resource "kubernetes_cluster_role_binding_v1" "f5xc-sd-sa-binding" {
 }
 
 resource "volterra_discovery" "f5xc-sd" {
-    name = format("%s-%s-sd-aws-eks", var.projectPrefix, local.build_suffix)
+    name = format("%s-%s-sd-aws-eks", local.projectPrefix, local.buildSuffix)
     namespace = "system"
     labels = {
         "k8s-svc" = "arcadia-ingress"
@@ -74,7 +74,7 @@ resource "volterra_discovery" "f5xc-sd" {
         }
         publish_info {
             publish {
-                namespace = var.namespace
+                namespace = local.namespace
             }
         }
     }

@@ -2,10 +2,6 @@ output "vpcId" {
   value       = module.vpc.vpc_id
   description = "VPC ID"
 }
-output "aws_vpc_cidr" {
-  value       = var.vpcCidr
-  description = "AWS VPC CIDR Block"
-}
 output "webserver_private_ip" {
   value       = aws_instance.webserver.private_ip
   description = "Private IP address of web server"

@@ -22,7 +22,3 @@ output "site_name" {
   description = "The name of the site in F5 XC"
   value = nonsensitive(volterra_azure_vnet_site.xc.name)
 }
-output "vnetCidr" {
-  description = "CIDR block for the Azure VNet"
-  value = var.vnetCidr
-}

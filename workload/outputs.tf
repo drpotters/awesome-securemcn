@@ -16,5 +16,5 @@ output "azure_ingress_service_port" {
 
 output "app_url" {
     description = "App URL"
-    value       = "https://${volterra_http_loadbalancer.lb_https.domains[0]}"
+    value       = nonsensitive("https://${volterra_http_loadbalancer.lb_https.domains[0]}")
 }

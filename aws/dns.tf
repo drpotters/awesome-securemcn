@@ -1,7 +1,7 @@
 ############################ DNS Resolver Endpoint ############################
 
 resource "aws_route53_resolver_endpoint" "dns" {
-  name               = format("%s-resolver-%s", var.projectPrefix, local.buildSuffix)
+  name               = format("%s-resolver-%s", local.projectPrefix, local.buildSuffix)
   direction          = "OUTBOUND"
   security_group_ids = [module.vpc.default_security_group_id]
 
@@ -13,15 +13,15 @@ resource "aws_route53_resolver_endpoint" "dns" {
   }
 
   tags = {
-    Name  = format("%s-resolver-%s", var.projectPrefix, local.buildSuffix)
-    Owner = var.resourceOwner
+    Name  = format("%s-resolver-%s", local.projectPrefix, local.buildSuffix)
+    Owner = local.resourceOwner
   }
 }
 
 ############################ DNS Resolver Rule (aka delegation) ############################
 
 resource "aws_route53_resolver_rule" "dns" {
-  name                 = format("%s-route53rule-%s", var.projectPrefix, local.buildSuffix)
+  name                 = format("%s-route53rule-%s", local.projectPrefix, local.buildSuffix)
   domain_name          = var.domain_name
   rule_type            = "FORWARD"
   resolver_endpoint_id = aws_route53_resolver_endpoint.dns.id
@@ -31,8 +31,8 @@ resource "aws_route53_resolver_rule" "dns" {
   }
 
   tags = {
-    Name  = format("%s-route53rule-%s", var.projectPrefix, local.buildSuffix)
-    Owner = var.resourceOwner
+    Name  = format("%s-route53rule-%s", local.projectPrefix, local.buildSuffix)
+    Owner = local.resourceOwner
   }
 }
 
