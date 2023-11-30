@@ -1,19 +1,19 @@
-name: "F5XC CE on Azure with AKS - Deploy"
+name: "F5XC CE on GCP VPC Site with GKE - Deploy"
 
 on:
   push:
     branches:
-      - deploy-azure-ce
+      - deploy-gcp-ce
   pull_request:
 
 jobs:
 
   terraform_infra:
-    name: "Azure Infra"
+    name: "GCP VPC Site Infra"
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./azure
+        working-directory: ./gcp
     steps:
       - name: Checkout    
         uses: actions/checkout@v3
@@ -81,13 +81,13 @@ jobs:
         if: github.ref == 'refs/heads/deploy-waf-az-ce' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
           
-  terraform_aks:
-    name: "Azure AKS"
+  terraform_gke:
+    name: "GCP GKE"
     runs-on: ubuntu-latest
     needs: terraform_infra
     defaults:
       run:
-        working-directory: ./azure/aks
+        working-directory: ./gcp/gke
     steps:
       - name: Checkout
         uses: actions/checkout@v3
