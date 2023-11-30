@@ -33,6 +33,33 @@ resource "volterra_aws_vpc_site" "xc" {
     no_network_policy        = true
     no_inside_static_routes  = true
     
+    /*
+    inside_static_routes {
+       static_route_list {
+         custom_static_route {
+           subnets {
+             ipv4 {
+               prefix = "10.1.0.0"
+               plen   = "16"
+             }
+           }
+           nexthop {
+             type = "NEXT_HOP_USE_CONFIGURED"
+             nexthop_address {
+               ipv4 {
+                 addr = "10.1.20.1"
+               }
+             }
+           }
+           attrs = [
+             "ROUTE_ATTR_INSTALL_FORWARDING",
+             "ROUTE_ATTR_INSTALL_HOST"
+           ]
+         }
+       }
+    }
+    */
+
     outside_static_routes {
       static_route_list {
           custom_static_route {
@@ -90,31 +117,6 @@ resource "volterra_aws_vpc_site" "xc" {
         existing_subnet_id = aws_subnet.workload.id
       }
     }
-
-    # inside_static_routes {
-    #   static_route_list {
-    #     custom_static_route {
-    #       subnets {
-    #         ipv4 {
-    #           prefix = "10.1.0.0"
-    #           plen   = "16"
-    #         }
-    #       }
-    #       nexthop {
-    #         type = "NEXT_HOP_USE_CONFIGURED"
-    #         nexthop_address {
-    #           ipv4 {
-    #             addr = "10.1.20.1"
-    #           }
-    #         }
-    #       }
-    #       attrs = [
-    #         "ROUTE_ATTR_INSTALL_FORWARDING",
-    #         "ROUTE_ATTR_INSTALL_HOST"
-    #       ]
-    #     }
-    #   }
-    # }
   }
 
   vpc {
