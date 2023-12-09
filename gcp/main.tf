@@ -103,7 +103,7 @@ module "outside" {
       subnet_name           = format("%s-%s-proxy-only", local.projectPrefix, local.buildSuffix)
       subnet_ip             = local.gcp_cidr[0].proxysubnet
       subnet_region         = local.gcpRegion
-      subnet_private_access = true
+      subnet_private_access = false
       purpose = "REGIONAL_MANAGED_PROXY"
       role = "ACTIVE"
     }
