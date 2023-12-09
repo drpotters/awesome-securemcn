@@ -8,7 +8,6 @@ variable "ssh_id" {
   description = "Unneeded for arcadia, only present for warning handling with TF cloud variable set"
 }
 
-/*
 # Common solution vars
 variable "projectPrefix" {
   type        = string
@@ -25,6 +24,16 @@ variable "resourceOwner" {
   description = "owner of the deployment, for tagging purposes"
   default     = null
 }
+variable "commonSiteLabels" {
+  type        = any
+  default     = null
+  description = "A common collection of labels (tags) to be assigned to each CE Site"
+}
+variable "commonClientIP" {
+  type        = string
+  default     = null
+  description = "Client IP is used for security access groups"
+}
 
 # AWS specific vars - if these are not empty/null, AWS resources will be created
 variable "awsRegion" {
@@ -33,11 +42,59 @@ variable "awsRegion" {
   default     = null
 }
 
+variable "f5xcCloudCredAWS" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with AWS"
+}
+variable "awsAz1" {
+  description = "Availability Zone #"
+  type        = string
+  default     = "az1"
+}
+variable "awsAz2" {
+  description = "Availability Zone #"
+  type        = string
+  default     = "az2"
+}
+variable "aws_cidr" {
+  type = list(object({
+    vpcCidr         = string,
+    publicSubnets   = list(string),
+    sliSubnets      = list(string),
+    workloadSubnets = list(string),
+    privateSubnets  = list(string)
+  }))
+  default = null
+}
+
 # Azure specific vars - if these are not empty/null, Azure resources will be created
+variable "azure_cidr" {
+  type = list(object({
+    vnet = list(object({
+      vnetCidr = string
+    })),
+    subnets = list(object({
+      public              = string
+      sli                 = string
+      workload            = string
+      AzureFirewallSubnet = string
+      private             = string
+    }))
+  }))
+  default = null
+}
+
 variable "azureLocation" {
   type        = string
   default     = null
   description = "location where Azure resources are deployed (abbreviated Azure Region name)"
+}
+
+variable "f5xcCloudCredAzure" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with Azure"
 }
 
 # GCP Specific vars - if these are not empty/null, GCP resources will be created
@@ -57,7 +114,7 @@ variable "f5xcCloudCredGCP" {
   type        = string
   default     = null
   description = "F5 XC Cloud Credential to use with GCP"
-} */
+}
 
 # App Workload specific vars
 # (Optional) Private docker registry to pull container images
@@ -88,14 +145,14 @@ variable "registry_email" {
 }
 
 # XC tenant vars; will be used in each cloud module
-/* variable "xc_tenant" {
+variable "xc_tenant" {
   type        = string
   description = "The F5 XC tenant to use."
 }
 variable "namespace" {
   type        = string
   description = "The F5 XC and K8s namespace into which XC nodes, resources, and app workloads will be deployed."
-} */
+}
 variable "f5xc-sd-sa" {
   type        = string
   description = "Name of the K8s Service Account F5 XC uses for service discovery in EKS"

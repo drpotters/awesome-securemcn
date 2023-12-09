@@ -34,7 +34,7 @@ variable "xc_tenant" {
   description = "The F5 XC tenant to use."
 }
 
-variable "ssh_key" {
+variable "ssh_id" {
   type        = string
   default     = ""
   description = "An optional SSH key to add to nodes."

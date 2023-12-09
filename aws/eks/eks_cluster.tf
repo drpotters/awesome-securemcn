@@ -9,7 +9,6 @@ resource "aws_eks_cluster" "eks-tf" {
   security_group_ids      = flatten([aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id])
   endpoint_private_access = true
   endpoint_public_access  = true
-  #public_access_cidrs = [var.admin_src_addr]
   public_access_cidrs = [data.tfe_outputs.root.values.commonClientIP, format("%s/32", data.http.ipinfo.response_body), "0.0.0.0/0"]
   #public_access_cidrs = ["0.0.0.0/0"]
   #subnet_ids = concat([for e in aws_subnet.eks-external: e.id], [for i in aws_subnet.eks-internal: i.id])

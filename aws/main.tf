@@ -62,6 +62,8 @@ resource "aws_subnet" "private" {
 resource "aws_route_table_association" "private_routes" {
   subnet_id      = aws_subnet.private.id
   route_table_id = module.vpc.public_route_table_ids[0]
+
+  depends_on = [ module.vpc ]
 }
 
 # @DavePotter add route table entries for each of the cloud deployment CIDR blocks

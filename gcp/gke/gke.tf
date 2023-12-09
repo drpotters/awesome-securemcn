@@ -3,18 +3,18 @@ data "google_client_config" "provider" {}
 
 # GKE cluster
 resource "google_container_cluster" "primary" {
-  name     = "${local.deployment_name}"
+  name     = local.deployment_name
   location = local.region
-  
+
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
-  networking_mode = "VPC_NATIVE"
+  networking_mode          = "VPC_NATIVE"
   ip_allocation_policy {
-    cluster_ipv4_cidr_block = cidrsubnet(local.gcp_cidr[0].sli,2,0)
-    services_ipv4_cidr_block = cidrsubnet(local.gcp_cidr[0].sli,2,1)
+    cluster_ipv4_cidr_block  = cidrsubnet(local.gcp_cidr[0].sli, 2, 0)
+    services_ipv4_cidr_block = cidrsubnet(local.gcp_cidr[0].sli, 2, 1)
   }
 
   network    = local.network_name

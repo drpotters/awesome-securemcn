@@ -9,10 +9,10 @@ terraform {
 
 data "tfe_outputs" "root" {
   organization = var.tf_cloud_organization
-  workspace = "xcmcn-ce-root"
+  workspace    = "xcmcn-ce-root"
 }
 
 data "tfe_outputs" "gcp-infra" {
   organization = var.tf_cloud_organization
-  workspace = "xcmcn-ce-gcp"
+  workspace    = "xcmcn-ce-gcp"
 }

@@ -3,41 +3,87 @@ variable "tf_cloud_organization" {
   type = string
   description = "TF cloud org (Value set in TF cloud)"
 }
+variable "ssh_id" {
+  type        = string
+  description = "Unneeded for arcadia, only present for warning handling with TF cloud variable set"
+}
 
-/* variable "projectPrefix" {
+# Common solution vars
+variable "projectPrefix" {
   type        = string
   description = "prefix for resources"
-} */
-/* variable "resourceOwner" {
-  type        = string
-  description = "name of the person or customer running the solution"
-} */
-/* variable azure_cidr {
-  type = map(any)
-  default = {
-    vnetCidr      = { name = "vnetCidr", value = "10.2.0.0/16" },
-    public        = { name = "public", value = "10.2.10.0/24"},
-    sli           = { name = "sli", value = "10.2.20.0/24"},
-    workload      = { name = "workload", value = "10.2.30.0/24"},
-    azurefirewall = { name = "azurefirewall", value = "10.2.40.0/24"},
-    private       = { name = "private", value = "10.2.52.0/24"}
-  }
-} */
-/* variable "vnetCidr" {
-  type        = string
-  default     = "10.2.0.0/16"
-  description = "CIDR IP Address range of the VNet"
+  default     = "mcn-demo"
 }
-variable "subnetPrefixes" {
-  type        = list(any)
-  default     = ["10.2.10.0/24", "10.2.20.0/24", "10.2.52.0/24", "10.2.30.0/24", "10.2.40.0/24"]
-  description = "Subnet address prefixes"
+variable "domain_name" {
+  type        = string
+  description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers."
+  default     = "shared.acme.com"
 }
-variable "subnetNames" {
-  type        = list(any)
-  default     = ["public", "sli", "private", "workload", "AzureFirewallSubnet"]
-  description = "Subnet names"
-} */
+variable "resourceOwner" {
+  type        = string
+  description = "owner of the deployment, for tagging purposes"
+  default     = null
+}
+variable "commonSiteLabels" {
+  type        = any
+  default     = null
+  description = "A common collection of labels (tags) to be assigned to each CE Site"
+}
+variable "commonClientIP" {
+  type        = string
+  default     = null
+  description = "Client IP is used for security access groups"
+}
+
+# AWS specific vars - if these are not empty/null, AWS resources will be created
+variable "awsRegion" {
+  description = "aws region"
+  type        = string
+  default     = null
+}
+
+variable "f5xcCloudCredAWS" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with AWS"
+}
+variable "awsAz1" {
+  description = "Availability Zone #"
+  type        = string
+  default     = "az1"
+}
+variable "awsAz2" {
+  description = "Availability Zone #"
+  type        = string
+  default     = "az2"
+}
+variable "aws_cidr" {
+  type = list(object({
+    vpcCidr         = string,
+    publicSubnets   = list(string),
+    sliSubnets      = list(string),
+    workloadSubnets = list(string),
+    privateSubnets  = list(string)
+  }))
+  default = null
+}
+
+# Azure specific vars - if these are not empty/null, Azure resources will be created
+variable "azure_cidr" {
+  type = list(object({
+    vnet = list(object({
+      vnetCidr = string
+    })),
+    subnets = list(object({
+      public              = string
+      sli                 = string
+      workload            = string
+      AzureFirewallSubnet = string
+      private             = string
+    }))
+  }))
+  default = null
+}
 variable "webapp_image_offer_name" {
   type        = string
   default     = "0001-com-ubuntu-server-focal"
@@ -48,10 +94,6 @@ variable "public_address" {
   default     = true
   description = "If true, an ephemeral public IP address will be assigned to the webserver. Default value is 'false'. "
 }
-/* variable "azureLocation" {
-  type        = string
-  description = "location where Azure resources are deployed (abbreviated Azure Region name)"
-} */
 variable "azureZones" {
   type        = list(any)
   description = "The list of availability zones in a region"
@@ -62,44 +104,151 @@ variable "adminAccountName" {
   description = "admin account name used with instance"
   default     = "ubuntu"
 }
-/* variable "ssh_key" {
-  type        = string
-  description = "public key used for authentication in ssh-rsa format"
-} */
-/* variable "xc_tenant" {
-  type        = string
-  description = "Tenant of F5 XC"
-} */
-/* variable "f5xcCloudCredAzure" {
-  type        = string
-  description = "Name of the F5 XC cloud credentials"
-} */
-/* variable "namespace" {
-  type        = string
-  description = "F5 XC application namespace"
-} */
-variable "domain_name" {
-  type        = string
-  description = "The DNS domain name that will be used as common parent generated DNS name of loadbalancers."
-  default     = "shared.acme.com"
-}
 variable "labels" {
   type        = map(string)
   default     = {}
   description = "An optional list of labels to apply to Azure resources."
 }
-variable "commonSiteLabels" {
-  type        = map(string)
-  default     = {} 
-  description = "An optional list of labels to apply to all CE Sites."
-} 
-variable "commonClientIP" {
-  type        = string
-  default     = null
-  description = "Client IP is used for security access groups"
-}
 variable "instanceType" {
   type        = string
   description = "instance type for virtual machine"
   default     = "Standard_B2ms"
+}
+variable "azureLocation" {
+  type        = string
+  default     = null
+  description = "location where Azure resources are deployed (abbreviated Azure Region name)"
+}
+
+variable "f5xcCloudCredAzure" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with Azure"
+}
+
+# GCP Specific vars - if these are not empty/null, GCP resources will be created
+variable "gcpRegion" {
+  type        = string
+  default     = null
+  description = "region where GCP resources will be deployed"
+}
+
+variable "gcpProjectId" {
+  type        = string
+  default     = null
+  description = "gcp project id"
+}
+
+variable "f5xcCloudCredGCP" {
+  type        = string
+  default     = null
+  description = "F5 XC Cloud Credential to use with GCP"
+}
+
+# App Workload specific vars
+# (Optional) Private docker registry to pull container images
+variable "use_private_registry" {
+  type        = bool
+  default     = false
+  description = "Whether to use an optional private docker registry to pull the app workload container images"
+}
+variable "registry_server" {
+  type = string
+  default = "registry.gitlab.com"
+  description = "FQDN of the docker registry server"
+}
+variable "registry_username" {
+  type        = string
+  default     = ""
+  description = "Private docker registry acount username"
+}
+variable "registry_password" {
+  type        = string
+  default     = ""
+  description = "Private docker registry account password"
+}
+variable "registry_email" {
+  type        = string
+  default     = ""
+  description = "Private docker registry account email address"
+}
+
+# XC tenant vars; will be used in each cloud module
+variable "xc_tenant" {
+  type        = string
+  description = "The F5 XC tenant to use."
+}
+variable "namespace" {
+  type        = string
+  description = "The F5 XC and K8s namespace into which XC nodes, resources, and app workloads will be deployed."
+}
+variable "f5xc-sd-sa" {
+  type        = string
+  description = "Name of the K8s Service Account F5 XC uses for service discovery in EKS"
+  default     = "f5xc-sd-serviceaccount"
+}
+
+# XC App Connect
+#XC
+variable "app_domain" {
+  type        = string
+  description = "FQDN for the app. If you have delegated domain `prod.example.com`, then your app_domain can be `<app_name>.prod.example.com`"
+  default     = "arcadia-mcn.f5-cloud-demo.com"
+}
+#XC WAF
+variable "xc_waf_blocking" {
+  type        = string
+  description = "Set XC WAF to Blocking(true) or Monitoring(false)"
+  default     = "false"
+}
+#XC AI/ML Settings for MUD, APIP - NOTE: Only set if using AI/ML settings from the shared namespace
+variable "xc_app_type" {
+  type        = list
+  description = "Set Apptype for shared AI/ML"
+  default     = []
+}
+variable "xc_multi_lb" {
+  type        = string
+  description = "ML configured externally using app type feature and label added to the HTTP load balancer."
+  default     = "false"
+}
+#XC API Protection and Discovery
+variable "xc_api_disc" {
+  type        = string
+  description = "Enable API Discovery on single LB"
+  default     = "false"
+}
+variable "xc_api_pro" {
+  type        = string
+  description = "Enable API Protection (Definition and Rules)"
+  default     = "false"
+}
+variable "xc_api_spec" {
+  type        = list
+  description = "XC object store path to swagger spec ex: https://my.tenant.domain/api/object_store/namespaces/my-ns/stored_objects/swagger/file-name/v1-22-01-12"
+  default     = null
+}
+#XC Bot Defense
+variable "xc_bot_def" {
+  type = string
+  description = "Enable XC Bot Defense"
+  default = "false"
+}
+#XC DDoS Protection
+variable "xc_ddos_def" {
+  type = string
+  description = "Enable XC DDoS Protection"
+  default = "false"
+}
+#XC DDoS Protection
+variable "xc_ddos_pro" {
+  type = string
+  description = "Enable XC DDoS Protection"
+  default = "false"
+}
+#XC Malicious User Detection
+variable "xc_mud" {
+  type        = string
+  description = "Enable Malicious User Detection on single LB"
+  default     = "false"
 }

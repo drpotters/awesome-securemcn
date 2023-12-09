@@ -51,4 +51,6 @@ resource "aws_instance" "webserver" {
     Name  = format("%s-webserver-%s", local.projectPrefix, local.buildSuffix)
     Owner = local.resourceOwner
   }
+
+  depends_on = [ module.vpc ]
 }

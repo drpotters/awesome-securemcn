@@ -39,3 +39,4 @@ api.p12
 nginx_repo.jwt
 gcp/gcp-credentials.json
 aws/eks/aws-auth-cm.yaml
+admin.auto.tfvars.off

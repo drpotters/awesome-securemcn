@@ -12,9 +12,10 @@ output "f5xcVirtualSite" {
 output "commonClientIP" {
   description = "IP Address of the client to use in network security groups"
   value       = var.commonClientIP
+  sensitive   = true
 }
 output "ssh_id" {
-  value     = var.ssh_key
+  value     = var.ssh_id
   sensitive = true
 }
 output "xc_global_vn" {
@@ -38,6 +39,7 @@ output "gcp_cidr" {
 }
 output "gcpProjectId" {
   value = var.gcpProjectId
+  sensitive = true
 }
 output "gcpRegion" {
   value = var.gcpRegion
@@ -50,15 +52,19 @@ output "resourceOwner" {
 }
 output "xc_tenant" {
   value = var.xc_tenant
+  sensitive = true
 }
 output "f5xcCloudCredAzure" {
   value = var.f5xcCloudCredAzure
+  sensitive = true
 }
 output "f5xcCloudCredAWS" {
   value = var.f5xcCloudCredAWS
+  sensitive = true
 }
 output "f5xcCloudCredGCP" {
   value = var.f5xcCloudCredGCP
+  sensitive = true
 }
 output "app_domain" {
   value = var.app_domain
