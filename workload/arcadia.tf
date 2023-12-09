@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "main" {
       spec {
         container {
           name    = "main"
-          image   = "registry.gitlab.com/f5xc-dpotter/arcadia-distributed/main-php-fpm:latest"
+          image   = "ghcr.io/drpotters/f5xc-mcn-nc-arcadia-main-php-fpm:latest"
           env {
             name  = "SKIP_CHOWN"
             value = "1"
@@ -85,8 +85,11 @@ resource "kubernetes_deployment" "main" {
           image_pull_policy = "IfNotPresent"
           // image_pull_policy = "Always"
         }
-        image_pull_secrets {
-          name  = "repo-secret"
+        dynamic "image_pull_secrets" {
+          for_each = var.use_private_registry ? [1] : []
+          content {
+            name  = "repo-secret"
+          }
         }
       }
     }
@@ -134,8 +137,11 @@ resource "kubernetes_deployment" "backend" {
           }
           image_pull_policy = "IfNotPresent"
         }
-        image_pull_secrets {
-          name  = "repo-secret"
+        dynamic "image_pull_secrets" {
+          for_each = var.use_private_registry ? [1] : []
+          content {
+            name  = "repo-secret"
+          }
         }
       }
     }
@@ -228,8 +234,11 @@ resource "kubernetes_deployment" "app2" {
           }
           image_pull_policy = "IfNotPresent"
         }
-        image_pull_secrets {
-          name  = "repo-secret"
+        dynamic "image_pull_secrets" {
+          for_each = var.use_private_registry ? [1] : []
+          content {
+            name  = "repo-secret"
+          }
         }
       }
     }
@@ -358,8 +367,11 @@ resource "kubernetes_deployment" "app3" {
           // image_pull_policy = "Always"
 
         }
-        image_pull_secrets {
-          name  = "repo-secret"
+        dynamic "image_pull_secrets" {
+          for_each = var.use_private_registry ? [1] : []
+          content {
+            name  = "repo-secret"
+          }
         }
       }
     }
