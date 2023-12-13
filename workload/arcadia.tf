@@ -125,7 +125,7 @@ resource "kubernetes_deployment" "backend" {
       spec {
         container {
           name  = "backend"
-          image = "registry.gitlab.com/f5xc-dpotter/arcadia-distributed/backend:latest"
+          image = "ghcr.io/drpotters/f5xc-mcn-nc-arcadia-backend:latest"
           env {
             name  = "service_name"
             value = "backend"
@@ -215,7 +215,7 @@ resource "kubernetes_deployment" "app2" {
       spec {
         container {
           name    = "api"
-          image   = "registry.gitlab.com/f5xc-dpotter/arcadia-distributed/app2-php-fpm:latest"
+          image   = "ghcr.io/drpotters/f5xc-mcn-nc-arcadia-app2-php-fpm:latest"
           env {
             name  = "SKIP_CHOWN"
             value = "1"
@@ -345,7 +345,7 @@ resource "kubernetes_deployment" "app3" {
       spec {
         container {
           name    = "app3"
-          image   = "registry.gitlab.com/f5xc-dpotter/arcadia-distributed/app3:latest"
+          image   = "ghcr.io/drpotters/f5xc-mcn-nc-arcadia-app3-php-fpm:latest"
           env {
             name  = "SKIP_CHOWN"
             value = "1"
@@ -376,5 +376,4 @@ resource "kubernetes_deployment" "app3" {
       }
     }
   }
-  depends_on = [ kubernetes_secret.gke-docker-secret ]
 }
