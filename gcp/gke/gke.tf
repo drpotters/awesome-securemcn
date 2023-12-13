@@ -1,6 +1,23 @@
 
 data "google_client_config" "provider" {}
 
+# Service account to use with Workstation VMs
+module "container_nodes_sa" {
+  source          = "terraform-google-modules/service-accounts/google"
+  version         = ">= 3.0"
+  project_id      = local.project_id
+  prefix          = local.projectPrefix
+  names           = [nonsensitive(format("%s-sa", local.buildSuffix))]
+  description     = nonsensitive(format("GKE cluster nodes service account (%s-%s)", local.projectPrefix, local.buildSuffix))
+  project_roles   = [
+    "${local.project_id}=>roles/logging.logWriter",
+    "${local.project_id}=>roles/monitoring.metricWriter",
+    "${local.project_id}=>roles/monitoring.viewer",
+    "${local.project_id}=>roles/compute.osLogin",
+  ]
+  generate_keys = false
+}
+
 # GKE cluster
 resource "google_container_cluster" "primary" {
   name     = local.deployment_name
@@ -28,7 +45,14 @@ resource "google_container_node_pool" "primary_nodes" {
   cluster    = google_container_cluster.primary.name
   node_count = var.gke_num_nodes
 
+  /*
+  network_config {
+      enable_private_nodes = true
+  }
+  */
+
   node_config {
+    service_account = module.container_nodes_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
@@ -45,6 +69,8 @@ resource "google_container_node_pool" "primary_nodes" {
       disable-legacy-endpoints = "true"
     }
   }
+
+  depends_on = [ module.container_nodes_sa ]
 }
 
 
