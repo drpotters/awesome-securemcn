@@ -12,6 +12,8 @@ This project..
 - Workload: Deploys a distributed app that's L3 routed using provider-specific custom coredns configmaps to steer connections across the environment. *This can be changed to work with other service discovery products like Consul and internal DNS*
 - Workload: Adds a public ingress point to the app using F5 XC DNS records managed service.
 
+.. figure:: assets/Arcadia in F5XC-MCN-NetworkConnect.svg
+
 Steps
 1. Manually create cloud credentials in AWS
 Add AWS credential to XC
