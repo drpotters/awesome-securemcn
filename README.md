@@ -6,11 +6,11 @@ This project..
 - Infra: Creates a new Azure resource group & VNET
 - Infra: Creates a new GPC Network & subnets
 - Infra: Connects all sites via L3 using an F5 XC global network as a backup and the site mesh group as the primary CE to CE path
-- Infra: Creates & attaches a managed K8s cluster to the CE SLO subnet in each cloud provider. ***Intent**: the SLO can route to other public subnets with Internet access where existing clusters likely exist.*
-- Infra-ish: Deploys an F5 supported NGINX ingress controller in AWS
-- Workload: Deploys cloud-provider ingress controllers in Azure and Aws
-- Workload: Deploys a distributed app that's L3 routed using provider-specific custom coredns configmaps to steer connections across the environment. *This can be changed to work with other service discovery products like Consul and internal DNS*
-- Workload: Adds a public ingress point to the app using F5 XC DNS records managed service.
+- Infra: Creates & attaches a provider managed K8s cluster to the CE SLO subnet in each cloud provider. ***Intent**: the SLO can route to other public subnets having Internet access where existing clusters with ingress endpoints likely already exist.*
+- Infra-ish: Deploy an F5 supported NGINX ingress controller in AWS
+- Workload: Deploy cloud-provider ingress controllers in Azure and Aws
+- Workload: Deploy a distributed app that's L3 routed using provider-specific custom coredns configmaps to steer connections across the environment. *This can be reworked to use other service discovery products like Consul and internal DNS*
+- Workload: Add a public ingress point to the app via F5 XC RE using F5 XC DNS records managed service.
 
 ![Arcadia in F5XC-MCN-NetworkConnect](https://github.com/drpotters/awesome-securemcn/assets/8976466/fc2df73d-d8aa-41ac-abdc-7928513cae9b)
 
