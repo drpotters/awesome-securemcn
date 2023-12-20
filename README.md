@@ -59,8 +59,8 @@ Variable set to define in your Terraform Cloud workspace:
     privateSubnets  = ["10.1.52.0/24", "10.1.152.0/24"]
 }]
 ```
-```
 | azure_cidr | terraform |
+```
 [{
       vnet = [{
         vnetCidr = "10.2.0.0/16"
@@ -73,7 +73,7 @@ Variable set to define in your Terraform Cloud workspace:
         private             = "10.2.52.0/24"
       }]
   }]
-````
+```
 | gcp_cidr | terraform |
 ```
 [{
