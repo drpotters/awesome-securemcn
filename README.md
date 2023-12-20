@@ -1,4 +1,4 @@
-![Arcadia in F5XC-MCN-NetworkConnect](https://github.com/drpotters/awesome-securemcn/assets/8976466/fc2df73d-d8aa-41ac-abdc-7928513cae9b)# awesome-securemcn
+# awesome-securemcn
 
 This project..
 - Infra: Creates project prefix, unique id, and an enhanced firewall policy (using values that will later be discovered by F5 XC and provided by AWS) and predefined CIDR blocks in Azure and in GCP
@@ -12,9 +12,79 @@ This project..
 - Workload: Deploys a distributed app that's L3 routed using provider-specific custom coredns configmaps to steer connections across the environment. *This can be changed to work with other service discovery products like Consul and internal DNS*
 - Workload: Adds a public ingress point to the app using F5 XC DNS records managed service.
 
-<img src="https://raw.github.com/drpotters/awesome-securemcn/master/asset/Arcadia in F5XC-MCN-NetworkConnect.svg">
+![Arcadia in F5XC-MCN-NetworkConnect](https://github.com/drpotters/awesome-securemcn/assets/8976466/fc2df73d-d8aa-41ac-abdc-7928513cae9b)
 
-Steps
+## Variables
+Variable set to define in your Terraform Cloud workspace:
+| Variable | Type (terraform / env) | Description |
+| - | - |
+| app_domain | terraform | The DNS domain name that will be used as common parent generated DNS name of loadbalancers. Default is 'shared.acme.com'. |
+| awsAz1 | terraform | AWS Availability Zone #1 |
+| awsAz2 | terraform | AWS Availability Zone #2 |
+| awsRegion | terraform | AWS Region |
+| azureLocation | terraform | Azure Location |
+| commonClientIP | terraform | IP address for client management access to infra and clusters |
+| commonSiteLabels | terraform | A common collection of labels (tags) to be assigned to each CE Site |
+| f5xcCloudCredAWS | terraform | F5 XC Cloud Credential to use with AWS |
+| f5xcCloudCredAzure | terraform | F5 XC Cloud Credential to use with Azure |
+| f5xcCloudCredGCP | terraform | F5 XC Cloud Credential to use with GCP |
+| gcpProjectId | terraform | The GCP project id to use |
+| gcpRegion | terraform | GCP region where resouce will be deployed |
+| namespace | terraform | The namespace to use in the F5 XC tenant and for workloads in K8s clusters |
+| projectPrefix | terraform | The prefix assigned to resource names created in XC and public cloud |
+| use_private_registry | terraform | Whether to use an optional private docker registry to pull the app workload container images |
+| registry_email | terraform | Private docker registry account email address |
+| registry_password | terrafom | Private docker registry account password |
+| registry_username | terraform | Private docker registry acount username |
+| resourceOwner | terraform | Owner of the deployment, for tagging purposes |
+| ssh_id | terraform | An optional SSH key to log in to the F5 XC CE nodes |
+| xc_tenant | terraform | The F5 XC tenant to use |
+| ARM_CLIENT_ID | env | Azure Client ID |
+| ARM_CLIENT_SECRET | env | Azure Client Secret |
+| ARM_SUBSCRIPTION_ID | env | Azure Subscription ID |
+| ARM_TENANT_ID | env | Azure Tenant (entranet directory) ID |
+| AWS_ACCESS_KEY_ID | env | AWS Access Key ID |
+| AWS_SECRET_ACCESS_KEY | env | AWS Secret Access Key |
+| GOOGLE_CREDENTIALS | env | Credentials to access GCP service account (base64encoded JSON) |
+| VES_P12_PASSWORD | env | F5 XC certificate password |
+| VOLT_API_P12_FILE | env | F5 XC P12 certificate (Base64encoded) |
+| VOLT_API_URL | env | F5 XC tenant-specific API URL |
+| aws_cidr | terraform |
+```
+[{
+    vpcCidr         = "10.1.0.0/16",
+    publicSubnets   = ["10.1.10.0/24", "10.1.110.0/24"],
+    sliSubnets      = ["10.1.20.0/24", "10.1.120.0/24"],
+    workloadSubnets = ["10.1.30.0/24", "10.2.130.0/24"],
+    privateSubnets  = ["10.1.52.0/24", "10.1.152.0/24"]
+}]
+```
+```
+| azure_cidr | terraform |
+[{
+      vnet = [{
+        vnetCidr = "10.2.0.0/16"
+      }],
+      subnets = [{
+        public              = "10.2.10.0/24"
+        sli                 = "10.2.20.0/24"
+        workload            = "10.2.30.0/24"
+        AzureFirewallSubnet = "10.2.40.0/24"
+        private             = "10.2.52.0/24"
+      }]
+  }]
+````
+| gcp_cidr | terraform |
+```
+[{
+      network     = "", // GCP doesn't require a base network CIDR
+      sli         = "10.3.0.0/16",
+      slo         = "100.64.96.0/22",
+      proxysubnet = "100.64.100.0/24"
+}]
+```
+
+## Steps
 1. Manually create cloud credentials in AWS
 Add AWS credential to XC
 2. Manually create cloud credentials in Azure
