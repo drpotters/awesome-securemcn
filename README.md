@@ -16,40 +16,40 @@ This project..
 
 ## Variables
 Variable set to define in your Terraform Cloud workspace: 
-| Variable | Type (terraform / env) | Description | 
+| Variable | Type (terraform / env) + Description | 
 | - | - | 
-| app_domain | terraform | The DNS domain name that will be used as common parent generated DNS name of loadbalancers. Default is 'shared.acme.com'. | 
-| awsAz1 | terraform | AWS Availability Zone #1 | 
-| awsAz2 | terraform | AWS Availability Zone #2 | 
-| awsRegion | terraform | AWS Region | 
-| azureLocation | terraform | Azure Location | 
-| commonClientIP | terraform | IP address for client management access to infra and clusters | 
-| commonSiteLabels | terraform | A common collection of labels (tags) to be assigned to each CE Site | 
-| f5xcCloudCredAWS | terraform | F5 XC Cloud Credential to use with AWS | 
-| f5xcCloudCredAzure | terraform | F5 XC Cloud Credential to use with Azure | 
-| f5xcCloudCredGCP | terraform | F5 XC Cloud Credential to use with GCP | 
-| gcpProjectId | terraform | The GCP project id to use | 
-| gcpRegion | terraform | GCP region where resouce will be deployed | 
-| namespace | terraform | The namespace to use in the F5 XC tenant and for workloads in K8s clusters | 
-| projectPrefix | terraform | The prefix assigned to resource names created in XC and public cloud | 
-| use_private_registry | terraform | Whether to use an optional private docker registry to pull the app workload container images | 
-| registry_email | terraform | Private docker registry account email address | 
-| registry_password | terrafom | Private docker registry account password | 
-| registry_username | terraform | Private docker registry acount username | 
-| resourceOwner | terraform | Owner of the deployment, for tagging purposes | 
-| ssh_id | terraform | An optional SSH key to log in to the F5 XC CE nodes | 
-| xc_tenant | terraform | The F5 XC tenant to use | 
-| ARM_CLIENT_ID | env | Azure Client ID | 
-| ARM_CLIENT_SECRET | env | Azure Client Secret | 
-| ARM_SUBSCRIPTION_ID | env | Azure Subscription ID | 
-| ARM_TENANT_ID | env | Azure Tenant (entranet directory) ID | 
-| AWS_ACCESS_KEY_ID | env | AWS Access Key ID | 
-| AWS_SECRET_ACCESS_KEY | env | AWS Secret Access Key | 
-| GOOGLE_CREDENTIALS | env | Credentials to access GCP service account (base64encoded JSON) | 
-| VES_P12_PASSWORD | env | F5 XC certificate password | 
-| VOLT_API_P12_FILE | env | F5 XC P12 certificate (Base64encoded) | 
-| VOLT_API_URL | env | F5 XC tenant-specific API URL | 
-| aws_cidr | terraform | 
+| app_domain | terraform - The DNS domain name that will be used as common parent generated DNS name of loadbalancers. Default is 'shared.acme.com'. | 
+| awsAz1 | terraform - AWS Availability Zone #1 | 
+| awsAz2 | terraform - AWS Availability Zone #2 | 
+| awsRegion | terraform - AWS Region | 
+| azureLocation | terraform - Azure Location | 
+| commonClientIP | terraform - IP address for client management access to infra and clusters | 
+| commonSiteLabels | terraform - A common collection of labels (tags) to be assigned to each CE Site | 
+| f5xcCloudCredAWS | terraform - F5 XC Cloud Credential to use with AWS | 
+| f5xcCloudCredAzure | terraform - F5 XC Cloud Credential to use with Azure | 
+| f5xcCloudCredGCP | terraform - F5 XC Cloud Credential to use with GCP | 
+| gcpProjectId | terraform - The GCP project id to use | 
+| gcpRegion | terraform - GCP region where resouce will be deployed | 
+| namespace | terraform - The namespace to use in the F5 XC tenant and for workloads in K8s clusters | 
+| projectPrefix | terraform - The prefix assigned to resource names created in XC and public cloud | 
+| use_private_registry | terraform - Whether to use an optional private docker registry to pull the app workload container images | 
+| registry_username | terraform - Private docker registry acount username | 
+| registry_password | terrafom - Private docker registry account password | 
+| registry_email | terraform - Private docker registry account email address | 
+| resourceOwner | terraform - Owner of the deployment, for tagging purposes | 
+| ssh_id | terraform - An optional SSH key to log in to the F5 XC CE nodes | 
+| xc_tenant | terraform - The F5 XC tenant to use | 
+| ARM_CLIENT_ID | env - Azure Client ID | 
+| ARM_CLIENT_SECRET | env - Azure Client Secret | 
+| ARM_SUBSCRIPTION_ID | env - Azure Subscription ID | 
+| ARM_TENANT_ID | env - Azure Tenant (entranet directory) ID | 
+| AWS_ACCESS_KEY_ID | env - AWS Access Key ID | 
+| AWS_SECRET_ACCESS_KEY | env - AWS Secret Access Key | 
+| GOOGLE_CREDENTIALS | env - Credentials to access GCP service account (base64encoded JSON) | 
+| VES_P12_PASSWORD | env - F5 XC certificate password | 
+| VOLT_API_P12_FILE | env - F5 XC P12 certificate (Base64encoded) | 
+| VOLT_API_URL | env - F5 XC tenant-specific API URL | 
+| aws_cidr | terraform |
 ```
 [{
     vpcCidr         = "10.1.0.0/16",
