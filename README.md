@@ -94,18 +94,18 @@ Add GCP credential to XC
 4. Manually create Volterra API.P12
 5. Add all credential names and/or values to TFC globals variable set
 6. CLI Workflow
-alias tfaa='tf apply -auto-approve'
-alias tfda='tf destroy -auto-approve'
-tfaa
-cd aws && tfaa
-cd eks && tfaa
-cd ../../nic && tfaa
-cd ../azure && tfaa
-cd aks && tfaa
-cd ../../gcp && tfaa
-cd gke && tfaa
-cd ../../workload
-tfaa
+alias tfaa='tf apply -auto-approve'  
+alias tfda='tf destroy -auto-approve'  
+tfaa  
+cd aws && tfaa  
+cd eks && tfaa  
+cd ../../nic && tfaa  
+cd ../azure && tfaa  
+cd aks && tfaa  
+cd ../../gcp && tfaa  
+cd gke && tfaa  
+cd ../../workload  
+tfaa  
 
 Go to your app at `https://${app_domain}`
 
