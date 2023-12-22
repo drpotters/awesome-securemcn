@@ -83,17 +83,44 @@ Variable set to define in your Terraform Cloud workspace:
       proxysubnet = "100.64.100.0/24"
 }]
 ```
+## Prerequisites
+1. A subscription and owner privilege to each cloud provider: AWS, Azure, GCP
+   ### AWS
+   IAM user with programmatic access for Terraform (for use by both F5 XC and GitHub)
+   ### Azure
+   App Registration for Terraform (for use by both F5 XC and GitHub), with the subscription IAM Role of "Owner" and limited ability to assign the Network Contributor role as follows: [^1]
+     1. Condition #1 Action: Create or update role assignments
+        - Expression:
+           Attribute source: *Request*  
+           Attribute: *Role definition ID*  
+           Operator: *ForAnyOfAnyValues:GuidEquals* (Value)  
+           Name: *Network Contributor (BuiltInRole)*  
+      2. Condition #2 Action: Delete a role assignment
+         - Expression:
+           Attribute source: *Request*  
+           Attribute: *Role definition ID*  
+           Operator: *ForAnyOfAnyValues:GuidEquals*  (Value)  
+           Name: *Network Contributor (BuiltInRole)*  
+   ### GCP
+   Service Account for Terraform (for use by both F5 XC and GitHub) with the following IAM Roles
+      - Compute Admin - *Create VM's*
+      - Compute Network Admin - *Create networks & subnets*
+      - Compute OS Admin Login - *Manage EKS cluster nodes*
+      - Compute OS Login - *Automate provisioning of services in EKS cluster nodes*
+      - DNS Administrator - *Only when needed to support internal DNS*
+      - Logging Admin - *EKS cluster requirement*
+      - Monitoring Admin - *EKS cluster requirement*
+      - Security Admin - *Create network firewall policies*
+      - Service Account Admin - *Create a unique service account to run EKS cluster nodes*
+   ### F5 XC
+   - Manually create cloud credential to use with AWS
+   - Manually create cloud credentials to use with Azure
+   - Manually create cloud credentials to use with GCP
+   - Manually create Volterra API.P12
 
 ## Steps
-1. Manually create cloud credentials in AWS
-Add AWS credential to XC
-2. Manually create cloud credentials in Azure
-Add Azure credential to XC
-3. Manually create cloud credentials in GCP
-Add GCP credential to XC
-4. Manually create Volterra API.P12
-5. Add all credential names and/or values to TFC globals variable set
-6. CLI Workflow  
+1. Add all credential names and/or values to TFC globals variable set  
+2. CLI Workflow  
 alias tfaa='tf apply -auto-approve'  
 alias tfda='tf destroy -auto-approve'  
 tfaa  
@@ -110,3 +137,5 @@ tfaa
 Go to your app at `https://${app_domain}`
 
 🤙🤟🍺🫖
+
+[^1] Necessary to allow the Azure Managed Identity created by Azure for the AKS cluster and kubelet node to create an internal load balanacer on the SLO/public subnet
