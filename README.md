@@ -91,16 +91,16 @@ Variable set to define in your Terraform Cloud workspace:
    App Registration for Terraform (for use by both F5 XC and GitHub), with the subscription IAM Role of "Owner" and limited ability to assign the Network Contributor role as follows: [^1]
      1. Condition #1 Action: Create or update role assignments
         - Expression:
-           Attribute source: *Request*  
-           Attribute: *Role definition ID*  
-           Operator: *ForAnyOfAnyValues:GuidEquals* (Value)  
-           Name: *Network Contributor (BuiltInRole)*  
+           Attribute source: **Request**  
+           Attribute: **Role definition ID**  
+           Operator: **ForAnyOfAnyValues:GuidEquals** (Value)  
+           Name: **Network Contributor (BuiltInRole)**  
       2. Condition #2 Action: Delete a role assignment
          - Expression:
-           Attribute source: *Request*  
-           Attribute: *Role definition ID*  
-           Operator: *ForAnyOfAnyValues:GuidEquals*  (Value)  
-           Name: *Network Contributor (BuiltInRole)*  
+           Attribute source: **Request**  
+           Attribute: **Role definition ID**  
+           Operator: **ForAnyOfAnyValues:GuidEquals**  (Value)  
+           Name: **Network Contributor (BuiltInRole)**  
    ### GCP
    Service Account for Terraform (for use by both F5 XC and GitHub) with the following IAM Roles
       - Compute Admin - *Create VM's*
@@ -138,4 +138,4 @@ Go to your app at `https://${app_domain}`
 
 🤙🤟🍺🫖
 
-[^1] Necessary to allow the Azure Managed Identity created by Azure for the AKS cluster and kubelet node to create an internal load balanacer on the SLO/public subnet
+[^1]: Necessary to allow the Azure Managed Identity created by Azure for the AKS cluster and kubelet node to create an internal load balanacer on the SLO/public subnet
