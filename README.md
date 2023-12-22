@@ -123,14 +123,14 @@ Variable set to define in your Terraform Cloud workspace:
 - Terraform Project
 - Terraform Workspaces  
 **Each workspace must be configured for local execution and with remote state sharing to all workspaces in the organization**
-xcmcn-ce-root
-xcmcn-ce-aws
-xcmcn-ce-aws-eks
-xcmcn-ce-nic
-xcmcn-ce-azure
-xcmcn-ce-azure-aks
-xcmcn-ce-gcp
-xcmcn-ce-gcp-gke
+xcmcn-ce-root  
+xcmcn-ce-aws  
+xcmcn-ce-aws-eks  
+xcmcn-ce-nic  
+xcmcn-ce-azure  
+xcmcn-ce-azure-aks  
+xcmcn-ce-gcp  
+xcmcn-ce-gcp-gke  
 
 ## Steps
 1. Add all credential names and/or values to TFC globals variable set  
